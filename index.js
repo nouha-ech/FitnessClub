@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";  // pour mysql
 import dotenv from "dotenv";    // pour env var
+import express from "express";  // pour express
 
 dotenv.config();
 
@@ -52,3 +53,14 @@ async function quer(dbConn) {
     }
   }
 })();
+
+
+const app = express();
+app.get("/", (req, res) => {
+  res.send("welcome to our Gym");
+})
+
+
+app.listen (port, () => {
+  console.log(`run serverr`);
+});
