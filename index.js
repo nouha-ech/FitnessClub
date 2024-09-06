@@ -1,5 +1,5 @@
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+import mysql from "mysql2/promise";  // pour mysql
+import dotenv from "dotenv";    // pour env var
 
 dotenv.config();
 
