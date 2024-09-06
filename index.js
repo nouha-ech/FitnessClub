@@ -24,7 +24,7 @@ async function dbConnection() {
 }
 
 
-
+// test query func
 async function quer(dbConn) {
   try {
     const [rows] = await dbConn.execute('SELECT ville FROM departements WHERE DNOM = ?', ['RH']);
@@ -45,7 +45,7 @@ async function quer(dbConn) {
   } finally {
     if (dbConn && dbConn.end) {
       try {
-        await dbConn.end();
+        await dbConn.end();    // fermer con
       } catch (closeErr) {
         console.error("closing conn error", closeErr.message);
       }
