@@ -1,8 +1,8 @@
 import mysql from "mysql2/promise";  // pour mysql
 import dotenv from "dotenv";    // pour env var
 import express from "express";  // pour express
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "path";   // pour creer 
+import { fileURLToPath } from "url";  // pour convrtir url
 
 
 
@@ -67,6 +67,7 @@ app.get("/", (req, res) => {
 
 app.listen (port, () => {
   console.log(`run serverr`);
+  
 });
 
 
