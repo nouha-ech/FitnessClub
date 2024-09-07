@@ -3,8 +3,8 @@ import dotenv from "dotenv";    // pour env var
 import express from "express";  // pour express
 import path from "path";   // pour creer 
 import { fileURLToPath } from "url";  // pour convrtir url
-
-
+const { default: open } = await import("open"); // ouverture automatique du navigateur
+// used await was needed bc of async (speed of )
 
 dotenv.config();
 
@@ -67,7 +67,9 @@ app.get("/", (req, res) => {
 
 app.listen (port, () => {
   console.log(`run serverr`);
-  
+  // commented this bc reopening was annoying
+  // open("http://localhost:3000/Homepage");
+
 });
 
 
