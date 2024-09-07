@@ -1,6 +1,10 @@
 import mysql from "mysql2/promise";  // pour mysql
 import dotenv from "dotenv";    // pour env var
 import express from "express";  // pour express
+import path from "path";
+import { fileURLToPath } from "url";
+
+
 
 dotenv.config();
 
@@ -57,10 +61,29 @@ async function quer(dbConn) {
 
 const app = express();
 app.get("/", (req, res) => {
-  res.send("welcome to our Gym");
+ //  res.send("welcome to our Gym");
 })
 
 
 app.listen (port, () => {
   console.log(`run serverr`);
+});
+
+
+app.use(express.static("public"));
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get('/Homepage', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'Homepage.html'));
+});
+
+app.get("/Login", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Login.html"));
+});
+
+app.get("/Signup", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Signup.html"));
 });
