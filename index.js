@@ -6,6 +6,8 @@ import { fileURLToPath } from "url";  // pour convrtir url
 const { default: open } = await import("open"); // ouverture automatique du navigateur
 // used await was needed bc of async (speed of )
 
+import cors from "cors";  // pour cors AKA cross origin resource sharing
+
 dotenv.config();
 
 const port = 3000;
@@ -36,7 +38,7 @@ async function quer(dbConn) {
     console.log('res', rows);
     }
     catch(querErr) {
-      console.error('query error:', queryErr.message);
+      console.error('query error:', querErr.message);
     }
 }
 
@@ -60,6 +62,8 @@ async function quer(dbConn) {
 
 
 const app = express();
+
+app.use(cors());  // for cors
 app.get("/", (req, res) => {
  //  res.send("welcome to our Gym");
 })
@@ -90,3 +94,46 @@ app.get("/Login", (req, res) => {
 app.get("/Signup", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Signup.html"));
 });
+
+
+// test fetch on Homepage
+
+
+// Route to fetch DNOM and ville from departements table
+app.get("/api/data", async (req, res) => {
+  let dbConn;
+  try {
+    console.log("Fetching data from the database...");
+    dbConn = await dbConnection(); // Create a new connection for each request
+    const [rows] = await dbConn.execute(
+      "SELECT ville FROM departements WHERE DNOM = ?",
+      ["RH"]
+    );
+    console.log("Query successful:", rows);
+    res.json(rows); // Send the results as JSON
+  } catch (queryErr) {
+    console.error("Query error:", queryErr.message);
+    res.status(500).json({ error: "Server error" }); // Send a JSON error response
+  } finally {
+    if (dbConn && dbConn.end) {
+      try {
+        await dbConn.end(); // Close connection
+      } catch (closeErr) {
+        console.error("Closing connection error", closeErr.message);
+      }
+    }
+  }
+});
+
+
+// code not working yet so tried to install cors bc
+// Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+// Error fetching data: SyntaxError: Unexpected token 'S', "Server error" is not valid JSON
+
+// code did not work bc of cors absence and also bc of syntax error front was expecting
+// an array while my sql returned an object
+// prob in db conn scope
+
+// corrected code try catch + syntax error + opened con inside app get req and it worked!!
+// front received array of obj not just one 
+// WORKEDDD
