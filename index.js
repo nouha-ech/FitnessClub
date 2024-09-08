@@ -8,6 +8,7 @@ const { default: open } = await import("open"); // ouverture automatique du navi
 
 import cors from "cors";  // pour cors AKA cross origin resource sharing
 // on utlise cors pour pouvoir communiquer avec le serveur (let us share data from port)
+import bodyParser from "body-parser";   // pour parser les requetes
 dotenv.config();
 
 const port = 3000;
@@ -62,8 +63,14 @@ async function quer(dbConn) {
 
 
 const app = express();
-
 app.use(cors());  // for cors
+
+app.use(bodyParser.urlencoded({ extended: false })); // for body parser
+app.use(express.json()); 
+app.use(bodyParser.json());
+
+
+
 app.get("/", (req, res) => {
  //  res.send("welcome to our Gym");
 })
@@ -137,3 +144,37 @@ app.get("/api/data", async (req, res) => {
 // corrected code try catch + syntax error + opened con inside app get req and it worked!!
 // front received array of obj not just one 
 // WORKEDDD
+
+
+
+
+
+
+// test dinsertion into db
+// gonna use async + try catch here too
+
+app.post("/Login", async (req, res) => {
+  let dbConn;
+  try {
+    dbConn = await dbConnection();
+
+    const { username, password } = req.body;
+
+    const sqlQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
+    const [result] = await dbConn.execute(sqlQuery, [username, password]);
+
+    res.send("Login successful");
+  } catch (error) {
+    console.log("erreur insertion", error);
+    res.status(500).send("Database error");
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
+
+// insertion didnt work
+//  issue maybe on loginUsername, loginPassword
+// issue on line 165 const [result] = await dbConn.execute(sqlQuery, [loginUsername,loginPassword,]);
+// issue was syntax err with db but now WORKEDD
