@@ -1,13 +1,13 @@
 import mysql from "mysql2/promise";  // pour mysql
 import dotenv from "dotenv";    // pour env var
 import express from "express";  // pour express
-import path from "path";   // pour creer 
+import path from "path";   // pour creer chemin
 import { fileURLToPath } from "url";  // pour convrtir url
 const { default: open } = await import("open"); // ouverture automatique du navigateur
 // used await was needed bc of async (speed of )
 
 import cors from "cors";  // pour cors AKA cross origin resource sharing
-
+// on utlise cors pour pouvoir communiquer avec le serveur (let us share data from port)
 dotenv.config();
 
 const port = 3000;
@@ -18,7 +18,7 @@ async function dbConnection() {
     mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: process.env.password,
+    password: process.env.password,  // used .env for security
     database: "entreprise",
     port: 3306,
   });
@@ -101,13 +101,13 @@ app.get("/Signup", (req, res) => {
 
 // Route to fetch DNOM and ville from departements table
 app.get("/api/data", async (req, res) => {
-  let dbConn;
+  let dbConn;  // necessaire pour fermer la con a la fin
   try {
     console.log("Fetching data from the database...");
     dbConn = await dbConnection(); // Create a new connection for each request
     const [rows] = await dbConn.execute(
-      "SELECT ville FROM departements WHERE DNOM = ?",
-      ["RH"]
+      "SELECT ville FROM departements WHERE DNOM = ?",  // query
+      ["RH"]   // parameters
     );
     console.log("Query successful:", rows);
     res.json(rows); // Send the results as JSON
