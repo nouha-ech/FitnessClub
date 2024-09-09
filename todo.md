@@ -13,3 +13,4 @@ aut
 subscribe journal
 chatbot
 note that i tried to fetch data bt coudnt
+continue profile card
