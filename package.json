@@ -17,6 +17,7 @@
     "express": "^4.19.2",
     "gymproject": "file:",
     "jsonwebtoken": "^9.0.2",
+    "md5": "^2.3.0",
     "mysql2": "^3.11.0",
     "nodemon": "^3.1.4",
     "open": "^10.1.0",

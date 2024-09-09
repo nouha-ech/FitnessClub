@@ -10,6 +10,7 @@ import cors from "cors";  // pour cors AKA cross origin resource sharing
 // on utlise cors pour pouvoir communiquer avec le serveur (let us share data from port)
 import bodyParser from "body-parser";   // pour parser les requetes
 dotenv.config();
+import md5 from "md5";
 
 const port = 3000;
 
@@ -163,7 +164,7 @@ app.post("/Login", async (req, res) => {
     const { username, password } = req.body;
 
     const sqlQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
-    const [result] = await dbConn.execute(sqlQuery, [username, password]);
+    const [result] = await dbConn.execute(sqlQuery, [username, md5(password)]);
 
     res.send("Login successful");
   } catch (error) {
