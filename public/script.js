@@ -70,3 +70,34 @@ async function Validate() {
 
   }
 }
+
+
+
+
+     async function fetchActivities() {
+       try {
+         const response = await fetch("/Activities");
+         if (!response.ok) {
+           throw new Error("Network res was not ok");
+         }
+         const Activities = await response.json();
+         displayActivities(Activities);
+       } catch (error) {
+         console.error("Error fetching activities:", error);
+       }
+     }
+
+     function displayActivities(Activities) {
+       const container = document.getElementById("activity-container");
+       container.innerHTML = Activities.map(
+         (Activities) => `
+                <div class="activity-card">
+                    <img src="${activity.image_url}" alt="${activity.name}">
+                    <h2>${activity.name}</h2>
+                    <p>${activity.description}</p>
+                </div>
+            `
+       ).join("");
+     }
+
+     fetchActivities();

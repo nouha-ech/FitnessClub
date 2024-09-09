@@ -109,6 +109,11 @@ app.get("/Validate", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Validate.html"));
 });
 
+
+app.get("/Activaties", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Activities.html"));
+});
+
 // test fetch on Homepage
 
 
@@ -230,5 +235,24 @@ app.post("/Validate", async (req, res) => {
     if (dbConn) {
       await dbConn.end();
     }
+  }
+});
+
+
+
+
+// card activité
+
+app.get("/activities", async (req, res) => {
+  let dbConn;
+  try {
+    dbConn = await dbConnection();
+       const [rows] = await dbConn.query(
+      "SELECT ActivityName, ActivityDescription FROM activities"
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Server error');
   }
 });
