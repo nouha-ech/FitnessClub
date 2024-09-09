@@ -105,6 +105,9 @@ app.get("/Signup", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Signup.html"));
 });
 
+app.get("/Validate", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Validate.html"));
+});
 
 // test fetch on Homepage
 
@@ -193,3 +196,39 @@ function hashpassword(password) {
 const testHash = hashpassword('nohaila');
 
 console.log('test hash:', testHash);
+
+
+// test validation
+
+app.post("/Validate", async (req, res) => {
+  let dbConn;
+  try {
+    dbConn = await dbConnection();
+
+    const { username, password } = req.body;
+
+    const sqlQuery = "SELECT password FROM users WHERE username = ?";
+    const [rows] = await dbConn.execute(sqlQuery, [username]);
+
+    if (rows.length === 0) {
+
+      return res.status(404).send("User not found");
+    }
+
+    const hashedPassword = rows[0].password;  // creer var
+
+
+    if (md5(password) === hashedPassword) {
+      return res.send("valid");
+    } else {
+      return res.status(401).send("Invalid");
+    }
+  } catch (error) {
+    console.log("Error validating user", error);
+    res.status(500).send("db error");
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
