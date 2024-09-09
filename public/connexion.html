@@ -3,42 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="gym1.css">
-    <title>Fitness Club</title>
+      <link rel="stylesheet" href="/public/gym1.css" >
+    <title>Document</title>
+   
 </head>
 <body>
 
-    <header>
-        <!-- <img src="logo.jpg" class="piclogo"> -->
-        <h4 class="logo">FITNESS CLUB</h4>
-        <nav class="navigation">
-            <a href="#">Accueil</a>
-            <a href="#">Activities</a>
-            <a href="#">Contact</a>
-            <a href="#Login">Log in</a>
-            <a href="formulaire.html" class="btn-inscription">S’inscrire</a>
-        </nav>
-    </header>
+        <header>
+          
+            <!--  <img src="logo.jpg" class="piclogo">  -->  
+                <h4 class="logo">FITNESS CLUB</h4>
+         
+            <nav class="navigation">
+                <a href="#">Accueil</a>
+                <a href="#">Activities</a>
+                <a href="#">Contact</a>
+               
+                <a href="#">Log in</a>
+                <a href="formulaire.html" class="btn-inscription">S’inscrire</a>
+            </nav>
+        </header>
+
+
 
     <section class="vid">
-        <!-- Background Video -->
+        <!-- Vidéo de fond -->
         <video autoplay muted loop class="background-video" poster="pt1.jpg">
             <source src="vd1.mp4" type="video/mp4">
             Votre navigateur ne supporte pas la balise vidéo.
         </video>
+    
         <div class="content-overlay">
             <h1>Fitness CLUB</h1>
             <p>Votre fitness. Votre vie.</p>
-            <a href="formulaire.html" class="cta-button">Rejoignez-nous</a>
+           <a href="formulaire.html" class="cta-button">Rejoignez-nous</a>
         </div>
     </section>
 
     <div class="section-title">
         Découvrez Nos Activités
     </div>
-
-</div>
-
 <div class="cardcontainer">
         <div class="maincontainer">
             <div class="thecard">
@@ -79,89 +83,12 @@
                     <a href="formulaire.html" class="btn-card"> inscrivez-vous</a> </div>
     
             </div>
-        </div> 
+        </div>
+            
+           
+                                            
+   
 </div>
      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     <div id="data-container"></div>
-      <div id="ville-container"></div>
-
-        <script>
-        // Fetch data from /api/data endpoint
-        fetch('/api/data')
-            .then(response => {
-                if (!response.ok) {  // verifier si la reponse est ok
-                    throw new Error('Server error: ' + response.statusText);
-                }
-                return response.json();  // Parse JSON
-            })
-            .then(data => {
-                console.log('Fetched data:', data);
-
-                // Check if data is an array or js obj
-                if (Array.isArray(data) && data.length > 0) {
-                    const container = document.getElementById('ville-container');
-                    // Get the first object from the array
-                    const villeData = data[0];
-                    if (villeData && villeData.ville) {  // verifier si villedata existe et contient une ville (no)
-                        const div = document.createElement('div');
-                        div.innerHTML = `Ville: ${villeData.ville}`; //pour affichage
-                        container.appendChild(div);  // ajouter div a la page html
-                    } else {
-                        console.error('Expected an object with ville but got:', villeData); // else de (villeData && villeData.ville) pour catch err si ville.ville nexsite pas 
-                    }
-                } else {
-                    console.error('Expected an array:', data); // else de (Array.isArray(data) && data.length > 0) pour catch err si data n'est pas un array
-                }
-            })
-            .catch(error => console.error('Error fetching data:', error)); // catch err si il ya une erreur lors de la requete
-    </script>
 </body>
 </html>
