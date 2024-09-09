@@ -180,3 +180,15 @@ app.post("/Login", async (req, res) => {
 //  issue maybe on loginUsername, loginPassword
 // issue on line 165 const [result] = await dbConn.execute(sqlQuery, [loginUsername,loginPassword,]);
 // issue was syntax err with db but now WORKEDD
+
+
+function hashpassword(password) {
+  return createHash('md5').update(password).digest('hex');
+
+}
+
+// test hash mdp
+
+const testHash = hashpassword('nohaila');
+
+console.log('test hash:', testHash);
