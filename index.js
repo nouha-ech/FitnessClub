@@ -13,6 +13,10 @@ dotenv.config();
 
 const port = 3000;
 
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
+
 async function dbConnection() {
     try {
     const dbConn = await
