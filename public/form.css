@@ -1,0 +1,63 @@
+body{   
+    background-image: url('bcform.jpg'); /* Chemin vers votre image de fond */
+    background-size: cover; /* Couvrir toute la zone visible */
+    background-position: center; /* Centrer l'image */
+    background-repeat: no-repeat; /* Ne pas répéter l'image */
+ max-width: 100%;
+    display: flex; 
+    justify-content: center; /* Centrer le formulaire horizontalement */
+    align-items: center; /* Centrer le formulaire verticalement */
+    height: 100%; /* Prendre toute la hauteur de la vue */
+    margin: 0; /* Supprimer la marge par défaut */
+    font-family: Arial, sans-serif; /* Ajouter une police de caractères */
+}
+
+.form-container {
+    width: 500px; /* Définir une largeur pour le formulaire */
+    background-color: rgba(246, 246, 255, 0.816);/* Couleur de fond du formulaire */
+    padding: 2rem; /* Espacement interne */
+    border-radius: 25px; /* Coins arrondis */
+    box-shadow: 0 0 5rem rgba(192, 32, 32, 0.158); /* Ombre autour du formulaire */
+}
+
+h4 {
+    text-align: center;
+    font-size: 35px;
+    margin-top: auto;
+    margin-bottom: 15px; /* Espacement en bas */
+    color: black /* Couleur du texte */
+}
+
+hr {
+    margin: 10px; /* Espacement au-dessus et en dessous */
+    height: 1px;
+    width: 100%;
+}
+
+label {
+    color: #000000b2;
+    margin-bottom: 6px;
+    display: block; /* Faire de l'étiquette un bloc pour l'alignement */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    margin-bottom: 25px; /* Espacement en bas */
+    padding: 10px; /* Espacement intérieur */
+    border: 1px solid #000000b2;
+    width: 100%; /* Prendre toute la largeur du formulaire */
+     /* Bordure légère */
+    border-radius: 10px; /* Coins légèrement arrondis */
+    font-size: 1.2em; /* Taille de la police */
+    box-sizing:  border-box; /* Inclure la bordure et le padding dans la largeur */
+}
+
+.submit-button {
+    border-radius: 10px;
+    margin-left: 35%;
+    padding: 20px; /* Espacement intérieur */
+    background-color: #ad0000; /* Couleur de fond du bouton */
+    color: #fff; /* Couleur du texte */
+    border: 1px solid #000000b2;/* Pas de bordure */
+}
