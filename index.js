@@ -13,9 +13,7 @@ dotenv.config();
 
 const port = 3000;
 
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-
+import crypto, { createHash } from "crypto";  // pour crypter les passwords
 
 async function dbConnection() {
     try {
