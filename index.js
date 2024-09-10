@@ -114,6 +114,10 @@ app.get("/Activaties", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Activities.html"));
 });
 
+app.get("/Reservation", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Reservation.html"));
+});
+
 // test fetch on Homepage
 
 

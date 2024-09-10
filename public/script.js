@@ -35,7 +35,7 @@ async function Login(){
   }
 }
 
-
+f5qfk
 
 async function Validate() {
   const username = document.getElementById("login-username").value;
@@ -96,8 +96,11 @@ async function Validate() {
                     <h2>${activity.name}</h2>
                     <p>${activity.description}</p>
                 </div>
+
             `
        ).join("");
      }
+     container.appendChild(div);
 
      fetchActivities();
+     displayActivities(activity-container);
