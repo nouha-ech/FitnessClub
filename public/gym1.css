@@ -1,10 +1,12 @@
-body {
+body, html {
+    background-image: url(c.png);
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     font-family: 'Arial', sans-serif;
     overflow-x: hidden; /* Évite le défilement horizontal */
+   
 }
 
 /* absolute permet de positioner exactement la video ou on veut */
@@ -36,15 +38,11 @@ body {
     color:  #2540aaf8;
     font-size: 4rem; /* Taille du titre */
     margin: 0 0 10px 0;
-    font-weight: bold; /text gras/
-    text-transform: uppercase; /* Majuscules pour le titre */
+    font-weight: bold;
+    text-transform :upperca /* Majuscules pour le titre */
 }
 
-.vid p {
-    font-size: 1.2rem;
 
-    padding:10px;
-}
 .vid {
     position: relative;
 }
@@ -67,8 +65,6 @@ body {
 }
 
 .btn-inscription{
-    
-
     border: none;
     color: black;
     padding: 15px 30px;
@@ -76,7 +72,6 @@ body {
     font-size: 1rem;
     cursor: pointer;
     border-radius: 5px;
-   
 }
 
         
@@ -87,7 +82,6 @@ body {
 
 /* Style pour le logo */
 .piclogo {
-  
     width: 5%;
     max-width: 100%;
     height: auto;
@@ -101,16 +95,14 @@ header {
     display: flex;
     position: fixed;
     top:0;
-
+    height: 80px;
     left: 0;
     z-index: 5;
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.3s color 0.3s;}
 
-header :hover {
-    color: #0033fff8;
-}  
+ 
 
 .logo {
     text-decoration: none;
@@ -119,14 +111,12 @@ header :hover {
     font-weight: bold;
     font-size: 2em;
     margin-left: -10%;
-
 }
 
 /* Style pour la navigation */
 .navigation {
     display: flex;
     align-items: center;
-
 }
 
 
@@ -136,60 +126,22 @@ header :hover {
     color: black;
     text-decoration: none;
     font-size: 1.1em;
-   /* Transition douce pour le changement de couleur */
 }
 .navigation .btn-inscription{
-    transition: color 0.3s , background-color 0.3s ;}
+    transition: color 0.3s , background-color 0.3s ;
+}
 
 .navigation .btn-inscription:hover{
     background-color:#2540aaf8 ;
-    color: white !important;body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Arial', sans-serif;
-    overflow-x: hidden; /* Évite le défilement horizontal */
+    color: white !important;
 }
-
-/* Style de la vidéo de fond */
-.background-video {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    object-fit: cover;
-    z-index: 1; /* Assurez-vous que la vidéo est derrière le contenu */
-}
-
-/* Style du contenu superposé sur la vidéo */
-.content-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    z-index: 2; /* Assurez-vous que le contenu est au-dessus de la vidéo */
-    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
-    padding: 20px 40px;
-    border-radius: 8px;
-}
-
-.vid h1 {
-    color: #2540aaf8;
-    font-size: 4rem;
-    margin: 0 0 10px 0;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
 .vid p {
     font-size: 1.2rem;
     padding: 10px;
 }
 
 /* Bouton d'appel à l'action */
-.cta-button, .btn-inscription {
+.btn-inscription {
     background-color: white;
     border: none;
     color: black;
@@ -201,57 +153,9 @@ header :hover {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.cta-button:hover, .btn-inscription:hover {
-    background-color: #2540aaf8;
-    color: white;
-}
 
-/* Style pour le logo */
-.piclogo {
-    width: 9%;
-    max-width: 100%;
-    height: auto;
-}
 
-/* Style pour l'en-tête */
-header {
-    background-color: rgb(244, 244, 244);
-    width: 100%;
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10; /* Assurez-vous que l'en-tête est au-dessus de la vidéo */
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    transition: background-color 0.3s, color 0.3s;
-}
 
-header:hover {
-    color: #0033fff8;
-}
-
-.logo {
-    text-decoration: none;
-    color: #0b102cf8;
-    font-weight: bold;
-    font-size: 2em;
-}
-
-.navigation {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Utilisez gap pour espacer les éléments de manière uniforme */
-}
-
-.navigation a {
-    color: black;
-    text-decoration: none;
-    font-size: 1.1em;
-    padding-bottom: 5px; /* Pour un effet de soulignement */
-    transition: color 0.3s ease;
-}
 
 .navigation a:hover {
     border-bottom: 2px solid #2540aaf8;
@@ -259,103 +163,86 @@ header:hover {
 
 /* Style pour les activités */
 .maincontainer {
-    position: relative;
+   position: relative;
     width: 250px;
     height: 320px;
-    background-color: aqua;
 }
 
-}
-.navigation a:hover {
-    border-bottom: 2px solid #2540aaf8;
-  
-}
 
 .cardcontainer{
+
     display: flex;
-    flex-wrap: wrap; /* Permet aux cartes de passer à la ligne suivante */
-    gap: 20px; /* Espacement entre les cartes */
-    padding: 20px; /* Espacement interne autour du conteneur */
-    justify-content: center; /* Centre les cartes horizontalement */
+    margin: 30px;
+    flex-wrap: wrap; 
+    gap: 50px;
 }
-/*activities */
-.maincontainer{
-   
-    justify-content: center; /* Centre les cartes horizontalement */
-    margin: 10px;
+
+.thecard{
+    width: 250px;
+    height: 320px;
+    justify-content: space-between;/* Centre les cartes horizontalement / / Espacement interne autour du conteneur */
     border-radius: 10px;
     position:relative;
     width: 250px;
     height: 320px;
-    background-color: rgb(255, 255, 255);
-
-   
-}
-.thecard{
-    justify-content: center; /* Centre les cartes horizontalement / / Espacement interne autour du conteneur */
-    border-radius: 10px;
-    position: relative;
-    width:100%;
-    height: 100%;
-    transform-style:preserve-3d;
+    transform-style: preserve-3d;
     transition: all 0.5s ease;
-    background: yellow;
+  
 }
-.thefront {
-    border-radius: 10px;
-    position: absolute;
-    width: 250px;
-    height: 320px;
-    background-image: url('musc.jpg');
-    background-size: cover; /* Ajuste l'image pour couvrir entièrement le conteneur */
-    backface-visibility: hidden !important;}
 
 .theback{
+   
     border-radius: 10px;
     position: absolute;
     width: 100%;
-        height: 100%;
+    height: 100%;
         backface-visibility: hidden;
         background:  #2540aaf8;
         color: white;
         transform: rotateY(180deg);
  
 }
+.cardcontainer{
+    display: flex;
+    flex-wrap: wrap; /* Permet de passer à la ligne suivante */
+    gap: 30px; /* Espacement entre les cartes */
+    justify-content: center; /* Centre les cartes horizontalement */
+    padding: 20px; /* Espacement autour du conteneur */
+    margin-bottom: 50px;
+  
+}
+
+.lacarte{
+    flex: 1 1 calc(33.333% - 30px); /* 33.333% de la largeur moins l'espacement */
+    box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur */
+}
+.lacarte .thefront{
+    backface-visibility: hidden;
+    border-radius: 10px;
+    position: absolute;
+    width: 250px;
+    height: 320px;
+    background-size: cover;
+   
+}
 .thecard:hover{
+ 
     transform: rotateY(180deg);
   
 }
 .nomsport{
+    font-size: 20px;
     text-align: center;
     font-weight: bold;
     text-transform: uppercase;
 }
 .parasport{
+    font-size: 30px;
     text-align: center;
     text-transform: uppercase;
     padding: 20px 15px;
 }
-.btn-card{
-    background-color: white;
-    margin-top: 20px;
 
-    position: fixed;
-    font-weight: bold;
-    right: 25%;
-    left:auto;
-    align-items: center;
-    border: none;
-    color: rgb(0, 0, 0);
-    padding: 15px ;
-    text-decoration: none;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-}
-.btn-card :hover{
-   background-color: #2540aaf8 ;
-}
 .section-title {
     padding: 50px 20px ;
     text-align: center;
@@ -364,3 +251,4 @@ header:hover {
     margin: 20px 0;
     color: #2540aaf8; /* Couleur du titre */
 }
+
