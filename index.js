@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";  // pour mysql
 import dotenv from "dotenv";    // pour env var
 import express from "express";  // pour express
+import session from "express-session";
 import path from "path";   // pour creer chemin
 import { fileURLToPath } from "url";  // pour convrtir url
 const { default: open } = await import("open"); // ouverture automatique du navigateur
@@ -15,7 +16,7 @@ import md5 from "md5";
 
 const port = 3000;
 
-import crypto, { createHash } from "crypto";  // pour crypter les passwords
+import { createHash } from "crypto";  // pour crypter les passwords
 
 async function dbConnection() {
     try {
@@ -75,10 +76,22 @@ app.use(bodyParser.urlencoded({ extended: false })); // for body parser
 app.use(express.json()); 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  console.log(`Protocol: ${req.protocol}`); // Logs 'http' or 'https'
+  next();
+});
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // for http 
+  })
+);
 
 app.get("/", (req, res) => {
- //  res.send("welcome to our Gym");
+   // res.send("welcome to our Gym");
 })
 
 
@@ -235,8 +248,8 @@ app.post("/Validate", async (req, res) => {
 
     if (md5(password) === hashedPassword) {
       return res.send("valid");
-      
-      return req.session
+      req.session.user = { email: email, authenticated: true };
+      return res.redirect("/Accueil");
     } else {
       return res.status(401).send("Invalid");
     }
@@ -295,3 +308,4 @@ app.post("/Register", async (req, res) => {
     }
   }
 });
+
