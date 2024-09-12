@@ -11,7 +11,7 @@
         <h4>S’inscrire</h4>
         <hr>
       
-        <form action="#" method="POST"  onsubmit="return validatePasswords()">
+        <form action="#" method="POST"  onsubmit="return validateMdp()">
             <div>
                 <label for="nom">Nom</label>
                 <input type="text" id="nom" name="nom" required>
@@ -29,34 +29,43 @@
                 <input type="email" id="email" name="email" required>
             </div>
             <div>
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" required>
+                <label for="mdp">Mot de passe</label> <!-- Changed from password to mdp -->
+                <input type="password" id="mdp" name="mdp" required>
             </div>
             <div>
                 <label for="confirmpassword">Confirmer votre mot de passe</label>
                 <input type="password" id="confirmpassword" name="confirmpassword" required>
             </div>
-            <input type="submit" value="S’inscrire" class="submit-button" >
+            <button type="button" class="submit-button" onclick="register()">S’inscrire</button>
+
         </form>
         <p class="dd">Avez-vous déjà un compte? <a href="Login.html">Se connecter</a></p>
 
     </div>
     <script>
-          function validatePasswords() {
-            var password = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('confirmpassword').value;
+        function validateMdp() {
+            var mdp = document.getElementById('mdp').value;
+            var confirmMdp = document.getElementById('confirmpassword').value;
             
-            if (password !== confirmPassword) {
+            if (mdp !== confirmMdp) {
                 alert('Les mots de passe ne correspondent pas.');
-                return false; 
-                // Permet la soumission du formulaire
+                return false;
             }
-            if (password.length < 8) {
+            if (mdp.length < 8) {
                 alert('Le mot de passe doit contenir au moins 8 caractères.');
-                return false; // Prevent form submission
+                return false;
             }
 
             return true;
+        }
+
+        function register() {
+            const form = document.querySelector('form');
+            const isValid = validateMdp();
+
+            if (isValid) {
+                form.submit();
+            }
         }
     </script>
 </body>

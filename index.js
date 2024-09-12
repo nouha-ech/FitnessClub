@@ -18,14 +18,13 @@ import crypto, { createHash } from "crypto";  // pour crypter les passwords
 
 async function dbConnection() {
     try {
-    const dbConn = await
-    mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: process.env.password,  // used .env for security
-    database: "entreprise",
-    port: 3306,
-  });
+    const dbConn = await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: process.env.password, // used .env for security
+      database: "FitnessClub",
+      port: 3306,
+    });
     console.log("Connected !!");
     return dbConn;
   } catch (err) {
@@ -38,7 +37,10 @@ async function dbConnection() {
 // test query func
 async function quer(dbConn) {
   try {
-    const [rows] = await dbConn.execute('SELECT ville FROM departements WHERE DNOM = ?', ['RH']);
+    const [rows] = await dbConn.execute(
+      "SELECT activity_description FROM activities WHERE activity_name = ?",
+      ["Pilates"]
+    );
     console.log('res', rows);
     }
     catch(querErr) {
@@ -81,7 +83,6 @@ app.get("/", (req, res) => {
 
 app.listen (port, () => {
   console.log(`run serverr`);
-  // commented this bc reopening was annoying
   // open("http://localhost:3000/Homepage");
 
 });
@@ -95,6 +96,10 @@ const __dirname = path.dirname(__filename);
 
 app.get('/Homepage', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'Homepage.html'));
+});
+
+app.get("/Accueil", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Accueil.html"));
 });
 
 app.get("/Login", (req, res) => {
@@ -128,8 +133,8 @@ app.get("/api/data", async (req, res) => {
     console.log("Fetching data from the database...");
     dbConn = await dbConnection(); // Create a new connection for each request
     const [rows] = await dbConn.execute(
-      "SELECT ville FROM departements WHERE DNOM = ?",  // query
-      ["RH"]   // parameters
+      "SELECT activity_description FROM activities WHERE activity_name = ?", // query
+      ["Pilates"] // parameters
     );
     console.log("Query successful:", rows);
     res.json(rows); // Send the results as JSON
@@ -214,17 +219,17 @@ app.post("/Validate", async (req, res) => {
   try {
     dbConn = await dbConnection();
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const sqlQuery = "SELECT password FROM users WHERE username = ?";
-    const [rows] = await dbConn.execute(sqlQuery, [username]);
+    const sqlQuery = "SELECT mdp FROM users WHERE email = ?";
+    const [rows] = await dbConn.execute(sqlQuery, [email]);
 
     if (rows.length === 0) {
 
       return res.status(404).send("User not found");
     }
 
-    const hashedPassword = rows[0].password;  // creer var
+    const hashedPassword = rows[0].mdp;  // creer var
 
 
     if (md5(password) === hashedPassword) {
@@ -252,11 +257,38 @@ app.get("/activities", async (req, res) => {
   try {
     dbConn = await dbConnection();
        const [rows] = await dbConn.query(
-      "SELECT ActivityName, ActivityDescription FROM activities"
-    );
+         "SELECT activity_name, activity_description FROM activities"
+       );
     res.json(rows);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Server error');
+  }
+});
+
+
+
+app.post("/Register", async (req, res) => {
+  let dbConn;
+  try {
+    dbConn = await dbConnection();
+    const { nom, prenom, telephone, email, mdp } = req.body;
+    const sqlQuery =
+      "INSERT INTO users (nom, prenom, telephone, email, mdp) VALUES (?, ?, ?, ?, ?)";
+    const [result] = await dbConn.execute(sqlQuery, [
+      nom,
+      prenom,
+      telephone,
+      email,
+      md5(mdp),
+    ]);
+    res.send("Inscription réussie");
+  } catch (error) {
+    console.error("Erreur d'insertion", error);
+    res.status(500).send("Erreur de bd");
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
   }
 });
