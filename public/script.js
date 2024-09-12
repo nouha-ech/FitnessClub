@@ -45,7 +45,6 @@ cardsData.forEach((card) => {
                            <h2 class="nomsport">${card.title}</h2>
                            <p class="parasport">${card.description}</p>
                        </div>
-                   
            </div>
         </div>
 
