@@ -178,10 +178,10 @@ app.post("/Login", async (req, res) => {
   try {
     dbConn = await dbConnection();
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const sqlQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
-    const [result] = await dbConn.execute(sqlQuery, [username, md5(password)]);
+    const sqlQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
+    const [result] = await dbConn.execute(sqlQuery, [email, md5(password)]);
 
     res.send("Login successful");
   } catch (error) {

@@ -3,22 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+       <title>Login Page</title>
 </head>
 <body>
-    log here
-
-    <div>
+    <div class="login">
+        <img src="login.jpg" alt="Login illustration" class="loginnn">
+        <h1>Login Page</h1>
+        
+            <label for="login-email">email</label>
+            <input type="text" id="login-email" placeholder="Enter your email" required>
     
-    <input type="text" id="login-username" placeholder="Username" required>
-    <input type="password" id="login-password" placeholder="Password" required>
-    <button onclick="Login()">Login</button>
-   </div>
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required>
+    
+            <button onclick="Validate()" class="sub">Log in</button>
+            <p id="log-messages"></p>
+    </div>
 
-    <div id="log-messages"></div>
+    <style>
+        body {
 
-    <a href="Signup.html"> create acc</a>
+    background-size: cover;
+    font-family: sans-serif;
+}
+.loginnn{
+    border-radius: 50%;
+}
+.login {
+    width: 450px;
+    height: 550px;
+    padding: 0px 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.685);
+}
 
-    <script src="script.js"></script>
+.login img {
+    margin-top: 20px;
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: 0 auto;
+}
+
+.login h1 {
+    margin: 0;
+    padding: 20px 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.login label {
+    color: #fff;
+    font-weight: bold;
+}
+
+.login input {
+    width: 100%;
+    margin: 10px 0px;
+}
+
+.login input[type="text"],
+.login input[type="password"] {
+    border: none;
+    outline: none;
+    height: 40px;
+
+    background: transparent;
+    border-bottom: 1px solid #fff;
+    font-size: 16px;
+}
+
+.sub {
+    border: none;
+    outline: none;
+    height: 40px;
+    font-size: 16px;
+    color: #fff;
+    background: rgb(11, 123, 193);
+    cursor: pointer;
+    margin-bottom: 25%;
+    transition: 0.5s;
+    text-align: center;
+    align-items: center;
+    display: block; /* Ensures the button is treated like a block-level element */
+    margin:30px auto; /* Centers the button horizontally */
+}
+
+.sub:hover {
+    transform: scale(1.1);
+}
+
+    </style>
 </body>
+<script src="script.js"></script>
 </html>

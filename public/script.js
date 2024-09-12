@@ -113,14 +113,14 @@ async function register() {
 // login func
 
 async function Login() {
-  const username = document.getElementById("login-username").value;
+  const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   const logMessages = document.getElementById("log-messages");
 
   //
 
-  if (!username || !password) {
-    logMessages.innerHTML = "enter your username and password";
+  if (!email || !password) {
+    logMessages.innerHTML = "enter your email and password";
     return;
   }
 
@@ -128,13 +128,13 @@ async function Login() {
     const response = await fetch("/Login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }), //convertir json en string
+      body: JSON.stringify({ email, password }), //convertir json en string
     });
     const result = await response.text();
     logMessages.innerHTML = result;
 
     if (response.ok) {
-      document.getElementById("login-username").value = "";
+      document.getElementById("login-email").value = "";
       document.getElementById("login-password").value = "";
     }
   } catch (error) {
@@ -145,14 +145,14 @@ async function Login() {
 
 
 async function Validate() {
-  const username = document.getElementById("login-username").value;
+  const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   const logMessages = document.getElementById("log-messages");
 
   //
 
-  if (!username || !password) {
-    logMessages.innerHTML = "enter your username and password";
+  if (!email || !password) {
+    logMessages.innerHTML = "enter your email and password";
     return;
   }
 
@@ -160,14 +160,14 @@ async function Validate() {
     const response = await fetch("/Validate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
 
     const result = await response.text();
     logMessages.innerHTML = result;
 
     if (response.ok) {
-      document.getElementById("login-username").value = "";
+      document.getElementById("login-email").value = "";
       document.getElementById("login-password").value = "";
     }
   } catch (error) {
