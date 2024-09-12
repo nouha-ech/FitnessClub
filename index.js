@@ -129,12 +129,12 @@ app.get("/Validate", (req, res) => {
 });
 
 
-app.get("/Activaties", (req, res) => {
+app.get("/Activities", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Activities.html"));
 });
 
-app.get("/Reservation", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "Reservation.html"));
+app.get("/Reservations", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "Reservations.html"));
 });
 
 // test fetch on Homepage
@@ -231,38 +231,43 @@ console.log('test hash:', testHash);
 app.post("/Validate", async (req, res) => {
   let dbConn;
   try {
-    dbConn = await dbConnection();
+    dbConn = await dbConnection(); // Your database connection function
 
     const { email, password } = req.body;
 
-    const sqlQuery = "SELECT mdp FROM users WHERE email = ?";
+    // Query to get hashed password and user ID
+    const sqlQuery = "SELECT mdp, id_user FROM users WHERE email = ?";
     const [rows] = await dbConn.execute(sqlQuery, [email]);
 
     if (rows.length === 0) {
-
       return res.status(404).send("User not found");
     }
 
-    const hashedPassword = rows[0].mdp;  // creer var
+    const hashedPassword = rows[0].mdp;
 
-
+    // Validate password
     if (md5(password) === hashedPassword) {
-      return res.send("valid");
-      req.session.user = { email: email, authenticated: true };
-      return res.redirect("/Accueil");
+      // Set session
+      req.session.user = {
+        id: rows[0].id_user, // Store user ID in the session
+        email: email,
+        authenticated: true,
+      };
+
+      // Redirect or send a success message
+      return res.redirect("/Accueil"); // Redirect to a different route after login
     } else {
-      return res.status(401).send("Invalid");
+      return res.status(401).send("Invalid credentials");
     }
   } catch (error) {
     console.log("Error validating user", error);
-    res.status(500).send("db error");
+    return res.status(500).send("Database error");
   } finally {
     if (dbConn) {
       await dbConn.end();
     }
   }
 });
-
 
 
 
@@ -308,4 +313,74 @@ app.post("/Register", async (req, res) => {
     }
   }
 });
+
+
+app.get("/api/reservations", async (req, res) => {
+  let dbConn;
+  try {
+    console.log("Session Data After Login:", req.session);
+    
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+
+    dbConn = await dbConnection();
+
+    // Fetch user ID from  session
+    const userId = req.session.user.id;
+
+    // Query to get reservations for the logged-in user
+    const sqlQuery = `
+      SELECT r.id_reservation, s.nom_session, s.date_session, s.heure_session
+      FROM reservations r
+      JOIN sessions s ON r.id_session = s.id_session
+      WHERE r.id_user = ?
+    `;
+    const [rows] = await dbConn.execute(sqlQuery, [userId]);
+
+    res.json(rows); // Send reservations as JSON
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
+
+
+
+app.delete("/api/reservations/:id", async (req, res) => {
+  let dbConn;
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+
+    dbConn = await dbConnection();
+    const reservationId = req.params.id;
+    const userId = req.session.user.id;
+
+    const sqlQuery =
+      "DELETE FROM reservations WHERE id_reservation = ? AND id_user = ?";
+    const [result] = await dbConn.execute(sqlQuery, [reservationId, userId]);
+
+    if (result.affectedRows === 0) {
+      return res
+        .status(404)
+        .json({ error: "Reservation not found or unauthorized" }); // JSON error response
+    }
+
+    res.json({ message: "Reservation cancelled successfully" }); // JSON success response
+  } catch (error) {
+    console.error("Error cancelling reservation:", error);
+    res.status(500).json({ error: "Server error" }); // JSON error response
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
+
 
