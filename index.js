@@ -289,6 +289,106 @@ app.get("/activities", async (req, res) => {
 
 
 
+async function SignUp() {
+  const nom = document.getElementById("nom").value;
+  const prenom = document.getElementById("prenom").value;
+  const telephone = document.getElementById("telephone").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmpassword").value;
+  const logMessages = document.getElementById("log-messages");
+
+  // Validate passwords
+  if (password !== confirmPassword) {
+    logMessages.innerHTML = "Les mots de passe ne correspondent pas.";
+    return;
+  }
+
+  if (password.length < 8) {
+    logMessages.innerHTML = "Le mot de passe doit contenir au moins 8 caractères.";
+    return;
+  }
+
+  try {
+    const response = await fetch("/SignUp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nom, prenom, telephone, email, password })
+    });
+
+    const result = await response.text();
+    logMessages.innerHTML = result;
+
+    if (response.ok) {
+      // Show success alert
+      alert("Inscription réussie!");
+
+      // Redirect to login page
+      window.location.href = "login.html";
+    }
+  } catch (error) {
+    logMessages.innerHTML = "Erreur: " + error.message;
+  }
+}
+
+
+
+// sign up
+
+app.post("/SignUp", async (req, res) => {
+  let dbConn;
+  try {
+    dbConn = await dbConnection();
+
+    const { nom, prenom, telephone, email, password } = req.body;
+
+    // Check if email already exists
+    const checkEmailQuery = "SELECT * FROM users WHERE email = ?";
+    const [existingUser] = await dbConn.execute(checkEmailQuery, [email]);
+
+    if (existingUser.length > 0) {
+      return res.status(400).send("Email already registered");
+    }
+
+    // Insert new user into database
+    const sqlQuery =
+      "INSERT INTO users (nom, prenom, telephone, email, mdp) VALUES (?, ?, ?, ?, ?)";
+    const hashedPassword = md5(password); // Hash the password
+    await dbConn.execute(sqlQuery, [
+      nom,
+      prenom,
+      telephone,
+      email,
+      hashedPassword,
+    ]);
+
+    res.send("Inscription réussie");
+  } catch (error) {
+    console.log("Erreur d'insertion", error);
+    res.status(500).send("Erreur de base de données");
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// register
+
+
 app.post("/Register", async (req, res) => {
   let dbConn;
   try {

@@ -54,10 +54,56 @@ cardsData.forEach((card) => {
 });
 
 
+// sign up func
+
+async function SignUp() {
+  const nom = document.getElementById("nom").value;
+  const prenom = document.getElementById("prenom").value;
+  const telephone = document.getElementById("telephone").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmpassword").value;
+  const logMessages = document.getElementById("log-messages");
+
+  // Validate passwords
+  if (password !== confirmPassword) {
+    logMessages.innerHTML = "Les mots de passe ne correspondent pas.";
+    return;
+  }
+
+  if (password.length < 8) {
+    logMessages.innerHTML =
+      "Le mot de passe doit contenir au moins 8 caractères.";
+    return;
+  }
+
+  try {
+    const response = await fetch("/SignUp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nom, prenom, telephone, email, password }),
+    });
+
+    const result = await response.text();
+    logMessages.innerHTML = result;
+
+    if (response.ok) {
+      // Show success alert
+      alert("Inscription réussie!");
+
+      // Redirect to login page
+      window.location.href = "login.html";
+    }
+  } catch (error) {
+    logMessages.innerHTML = "Erreur: " + error.message;
+  }
+}
 
 
 
 
+
+// register func
 
 async function register() {
   const nom = document.getElementById("nom").value;
