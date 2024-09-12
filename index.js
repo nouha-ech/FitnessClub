@@ -352,34 +352,27 @@ app.get("/api/reservations", async (req, res) => {
 
 
 app.delete("/api/reservations/:id", async (req, res) => {
-  let dbConn;
+  if (!req.session || !req.session.user) {
+    return res.status(401).send("User not authenticated");
+  }
+
+  const reservationId = req.params.id;
+
   try {
-    if (!req.session.user || !req.session.user.id) {
-      return res.status(401).json({ error: "User not authenticated" });
-    }
-
-    dbConn = await dbConnection();
-    const reservationId = req.params.id;
-    const userId = req.session.user.id;
-
-    const sqlQuery =
-      "DELETE FROM reservations WHERE id_reservation = ? AND id_user = ?";
-    const [result] = await dbConn.execute(sqlQuery, [reservationId, userId]);
+    const dbConn = await dbConnection();
+    const [result] = await dbConn.execute(
+      "DELETE FROM reservations WHERE id_reservation = ?",
+      [reservationId]
+    );
 
     if (result.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({ error: "Reservation not found or unauthorized" }); // JSON error response
+      return res.status(404).send("Reservation not found");
     }
 
-    res.json({ message: "Reservation cancelled successfully" }); // JSON success response
+    res.send("Reservation cancelled successfully");
   } catch (error) {
     console.error("Error cancelling reservation:", error);
-    res.status(500).json({ error: "Server error" }); // JSON error response
-  } finally {
-    if (dbConn) {
-      await dbConn.end();
-    }
+    res.status(500).send("Server error");
   }
 });
 
