@@ -1,0 +1,149 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #d0e7ed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+header {
+    background-color: #1e3263c9;
+    width: 100%;
+    display: flex;
+    position: fixed;
+    top:0;
+    height: 80px;
+    left: 0;
+    z-index: 5;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s color 0.3s;
+}
+
+ 
+
+.logo {
+    text-decoration: none;
+    display: flex;
+    color:  #0b102cf8;
+    font-weight: bold;
+    font-size: 2em;
+    margin-left: 7%;
+}
+
+/* Style pour la navigation */
+.navigation {
+    display: flex;
+    align-items: center;
+}
+
+
+.navigation a {
+    margin: 10px;
+    color: black;
+    text-decoration: none;
+    font-size: 1.1em;
+    border-bottom: solid 2px transparent; /* Bordure inférieure par défaut, transparente */
+    transition: border-bottom-color 0.3s; /* Transition pour la couleur de la bordure inférieure */
+}
+
+.navigation a:hover {
+    border-bottom-color: #000000f8; /* Couleur de la bordure inférieure au survol */
+}
+
+
+
+
+
+
+.container {
+    margin-top: 30%;
+    text-align: center;
+    background-color: #f1f7fa;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 1000px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: auto; 
+}
+
+h1 {
+    font-size: 28px;
+    color: #3b4b6b;
+    margin-bottom: 30px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#activities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; 
+    justify-content: center;
+    overflow: auto; 
+}
+
+.activity-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px; }
+
+.activity-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.activity-card h2 {
+    font-size: 20px;
+    color: #3b4b6b;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #3b4b6b;
+}
+
+.form-group span {
+    display: block;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+}
+
+.reserve-btn {
+    background-color: #1e3163;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.reserve-btn:hover {
+    background-color: #2b4480;
+}
+
+.contact-info {
+    font-size: 14px;
+    color: #3b4b6b;
+    margin-top: 20px;
+}

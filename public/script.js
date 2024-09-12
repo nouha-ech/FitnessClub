@@ -169,6 +169,7 @@ async function Validate() {
     if (response.ok) {
       document.getElementById("login-email").value = "";
       document.getElementById("login-password").value = "";
+      window.location.href = "Accueil.html";
     }
   } catch (error) {
     logMessages.innerHTML = "erreur  " + error.message;

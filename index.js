@@ -5,6 +5,7 @@ import path from "path";   // pour creer chemin
 import { fileURLToPath } from "url";  // pour convrtir url
 const { default: open } = await import("open"); // ouverture automatique du navigateur
 // used await was needed bc of async (speed of )
+// import {  session }  from "express-session";
 
 import cors from "cors";  // pour cors AKA cross origin resource sharing
 // on utlise cors pour pouvoir communiquer avec le serveur (let us share data from port)
@@ -234,6 +235,8 @@ app.post("/Validate", async (req, res) => {
 
     if (md5(password) === hashedPassword) {
       return res.send("valid");
+      
+      return req.session
     } else {
       return res.status(401).send("Invalid");
     }

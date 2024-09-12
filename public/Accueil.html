@@ -3,18 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="gym1.css">
-    <title>Document</title>
+    <title>GymClub</title>
+    <link rel="stylesheet" href="card.css">
 </head>
 <body>
-     <header></header>
+    <header>
 
         <h4 class="logo">FITNESS CLUB</h4>
+
         <nav class="navigation">
-            <a href="Accueil">Les sessions disponibles</a>
-            <a href="Reservations">Mes réservations</a>
-            <a href="Homepage" class="btn-inscription">Se déconnecter</a>
+            <a href="Reservations">mes réservations</a>
+            <a href="compte.html">compte</a>
+            <a href="Homepage">se deconnecter</a>
+
         </nav>
     </header>
+    <div class="container">
+        <h1>Activities</h1>
+        <div id="activities">
+            
+        </div>
+        <div class="contact-info">
+            <p>+212 626-934120</p>
+        </div>
+    </div>
+
+    <script>
+        
+        const activities = [
+            { id: 1, name: "Weight Training", reservedPlaces: 0, totalPlaces: 10, date: "" },
+            { id: 2, name: "Swimming", reservedPlaces: 0, totalPlaces: 10, date: "" },
+            { id: 3, name: "Yoga", reservedPlaces: 0, totalPlaces: 10, date: "" },
+            { id: 4, name: "Cardio", reservedPlaces: 0, totalPlaces: 10, date: "" },
+            { id: 5, name: "Dance", reservedPlaces: 0, totalPlaces: 10, date: "" },
+            { id: 6, name: "Boxing", reservedPlaces: 0, totalPlaces: 10, date: "" }
+        ];
+
+    
+        function renderActivities() {
+            const container = document.getElementById('activities');
+            container.innerHTML = ''; 
+
+            activities.forEach(activity => {
+                const activityDiv = document.createElement('div');
+                activityDiv.className = 'activity-card';
+                activityDiv.innerHTML = `
+                    <h2>${activity.name}</h2>
+                    <div class="form-group">
+                        <label for="places-${activity.id}">Number of places reserved:</label>
+                        <span id="places-${activity.id}">${activity.reservedPlaces} out of ${activity.totalPlaces} places reserved</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="date-${activity.id}">Date of the activity:</label>
+                        <span id="date-${activity.id}">${activity.date ? new Date(activity.date).toLocaleDateString() : "Date not set"}</span>
+                    </div>
+                    <button class="reserve-btn" onclick="reservePlace(${activity.id})">Reserve Now</button>
+                `;
+                container.appendChild(activityDiv);
+            });
+        }
+
+        
+        function reservePlace(activityId) {
+            const activity = activities.find(a => a.id === activityId);
+            if (activity) {
+                if (activity.reservedPlaces < activity.totalPlaces) {
+                    activity.reservedPlaces++;
+                    if (!activity.date) {
+                        activity.date = new Date().toISOString().split('T')[0]; 
+                    }
+                    renderActivities(); 
+                    alert("Your reservation has been confirmed.");
+                } else {
+                    alert("Sorry, no more places available for this activity.");
+                }
+            } else {
+                alert("Activity not found.");
+            }
+        }
+
+        window.onload = renderActivities;
+    </script>
 </body>
 </html>
