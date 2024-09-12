@@ -39,6 +39,7 @@
         <th>Session</th>
         <th>Date</th>
         <th>Time</th>
+        <th>Cancel</th>
       </tr>
     </thead>
     <tbody>
@@ -48,6 +49,7 @@
           <td>${reservation.nom_session}</td>
           <td>${reservation.date_session}</td>
           <td>${reservation.heure_session}</td>
+           <td><button onclick="cancelReservation(${reservation.id_reservation})">Cancel</button></td>
         </tr>
       `).join('')}
     </tbody>
