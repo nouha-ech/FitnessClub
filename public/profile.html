@@ -6,22 +6,72 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="profile-Container">
-         <table>
-            <tr id="items">
-            </tr>
+   
+              
 
-            <tr></tr>
+     <div id="data-container"></div>
+      <div id="ville-container"></div>
 
-                            <td><a href=""> update</a></td> 
-                            <td><a href=""> delete</a></td> 
-                        </tr>
+        <script>
+        // Fetch data from /api/data endpoint
+        fetch('/api/data')
+            .then(response => {
+                if (!response.ok) {  // verifier si la reponse est ok
+                    throw new Error('Server error: ' + response.statusText);
+                }
+                return response.json();  // Parse JSON
+            })
+            .then(data => {
+                console.log('Fetched data:', data);
 
-             </table>
+                // Check if data is an array or js obj
+                if (Array.isArray(data) && data.length > 0) {
+                    const container = document.getElementById('ville-container');
+                    // Get the first object from the array
+                    const villeData = data[0];
+                    if (villeData && villeData.ville) {  // verifier si villedata existe et contient une ville (no)
+                        const div = document.createElement('div');
+                        div.innerHTML = `Ville: ${villeData.ville}`; //pour affichage
+                        container.appendChild(div);  // ajouter div a la page html
+                    } else {
+                        console.error('Expected an object with ville but got:', villeData); // else de (villeData && villeData.ville) pour catch err si ville.ville nexsite pas 
+                    }
+                } else {
+                    console.error('Expected an array:', data); // else de (Array.isArray(data) && data.length > 0) pour catch err si data n'est pas un array
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+            
+            // catch err si il ya une erreur lors de la requete
 
+            async function fetchActivities() {
+  try {
+    const response = await fetch("/Activities");
+    if (!response.ok) {
+      throw new Error("Network res was not ok");
+    }
+    const Activities = await response.json();
+    displayActivities(Activities);
+  } catch (error) {
+    console.error("Error fetching activities:", error);
+  }
+}
 
+function displayActivities(Activities) {
+  const container = document.getElementById("activity-container");
+  container.innerHTML = Activities.map(
+    (Activities) => `
+                <div class="activity-card">
+                    <img src="${activity.image_url}" alt="${activity.name}">
+                    <h2>${activity.name}</h2>
+                    <p>${activity.description}</p>
+                </div>
 
-    </div>
+            `
+  ).join("");
+}
 
+fetchActivities();
+    </script>
 </body>
 </html>

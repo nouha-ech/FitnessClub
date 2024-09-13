@@ -77,7 +77,7 @@ h1 {
     font-family: 'Times New Roman', Times, serif;
 }
 
-#activities {
+#sessions {
     display: flex;
     flex-wrap: wrap;
     gap: 20px; 
@@ -85,7 +85,7 @@ h1 {
     overflow: auto; 
 }
 
-.activity-card {
+.session-card {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -95,12 +95,12 @@ h1 {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin-bottom: 20px; }
 
-.activity-card:hover {
+.session-card:hover {
     transform: scale(1.05);
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.activity-card h2 {
+.session-card h2 {
     font-size: 20px;
     color: #3b4b6b;
     margin-bottom: 10px;

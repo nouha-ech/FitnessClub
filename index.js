@@ -231,7 +231,7 @@ console.log('test hash:', testHash);
 app.post("/Validate", async (req, res) => {
   let dbConn;
   try {
-    dbConn = await dbConnection(); // Your database connection function
+    dbConn = await dbConnection(); // 
 
     const { email, password } = req.body;
 
@@ -254,8 +254,8 @@ app.post("/Validate", async (req, res) => {
         authenticated: true,
       };
 
-      // Redirect or send a success message
-      return res.redirect("/Accueil"); // Redirect to a different route after login
+      
+      return res.redirect("/Accueil"); //pour aller vrs page daccueil
     } else {
       return res.status(401).send("Invalid credentials");
     }
@@ -342,7 +342,7 @@ app.post("/SignUp", async (req, res) => {
 
     const { nom, prenom, telephone, email, password } = req.body;
 
-    // Check if email already exists
+    // check if mail exist
     const checkEmailQuery = "SELECT * FROM users WHERE email = ?";
     const [existingUser] = await dbConn.execute(checkEmailQuery, [email]);
 
@@ -375,17 +375,6 @@ app.post("/SignUp", async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 // register
 
 
@@ -414,6 +403,82 @@ app.post("/Register", async (req, res) => {
   }
 });
 
+// to create reservations
+
+
+// Endpoint to create a reservation
+app.post('/api/reservations', async (req, res) => {
+    let dbConn;
+    try {
+        if (!req.session.user || !req.session.user.id) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        const { sessionId } = req.body;
+        if (!sessionId) {
+            return res.status(400).json({ error: 'Session ID is required' });
+        }
+
+        dbConn = await dbConnection();
+
+        const userId = req.session.user.id;
+
+        // Check if there are available places
+        const [session] = await dbConn.execute('SELECT place_disponible FROM sessions WHERE id_session = ?', [sessionId]);
+        if (session.length === 0 || session[0].place_disponible <= 0) {
+            return res.status(400).json({ error: 'No available places' });
+        }
+
+        // Create reservation
+        await dbConn.execute('INSERT INTO reservations (id_session, id_user) VALUES (?, ?)', [sessionId, userId]);
+
+        // Update available places
+        await dbConn.execute('UPDATE sessions SET place_disponible = place_disponible - 1 WHERE id_session = ?', [sessionId]);
+
+        res.status(201).json({ message: 'Reservation created' });
+    } catch (error) {
+        console.error('Error creating reservation:', error);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        if (dbConn) {
+            await dbConn.end();
+        }
+    }
+});
+
+
+
+
+
+// to display sessions disponibles
+
+
+// Endpoint to fetch sessions
+app.get('/api/sessions', async (req, res) => {
+    let dbConn;
+    try {
+        dbConn = await dbConnection();
+
+        const sqlQuery = `
+            SELECT s.id_session, s.nom_session, s.date_session, s.heure_session, s.place_disponible
+            FROM sessions s
+        `;
+        const [rows] = await dbConn.execute(sqlQuery);
+
+        res.json(rows); 
+    } catch (error) {
+        console.error('Error fetching sessions:', error);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        if (dbConn) {
+            await dbConn.end();
+        }
+    }
+});
+
+
+
+// to get unique reservations for logged in user
 
 app.get("/api/reservations", async (req, res) => {
   let dbConn;
@@ -464,10 +529,6 @@ app.delete("/api/reservations/:id", async (req, res) => {
       "DELETE FROM reservations WHERE id_reservation = ?",
       [reservationId]
     );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).send("Reservation not found");
-    }
 
     res.send("Reservation cancelled successfully");
   } catch (error) {

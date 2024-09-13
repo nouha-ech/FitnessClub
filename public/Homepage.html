@@ -41,42 +41,68 @@
     <div class="cardcontainer"  id="card-container" >
      
     </div>
-</div> 
-          
+    </div>
+    <script> 
 
-     <div id="data-container"></div>
-      <div id="ville-container"></div>
+        const cardsData = [
+  {
+    photo: "danse.png",
+    title: "Dance",
+    description: "Express yourself with elegance and rhythm!",
+  },
+  {
+    photo: "boxe.png",
+    title: "Boxing",
+    description: "Unleash your energy and gain strength!",
+  },
+  {
+    photo: "cardio.png",
+    title: "Cardio",
+    description: "Boost your endurance and burn calories!",
+  },
+  {
+    photo: "yoga.png",
+    title: "Yoga",
+    description: "Find balance and inner serenity!",
+  },
+  {
+    photo: "musc.jpg",
+    title: "Bodybuilding",
+    description: "Strengthen your muscles and build power!",
+  },
+  {
+    photo: "natation.png",
+    title: "Swimming",
+    description: "Enjoy full-body exercise with refreshing strokes!",
+  },
+];
 
-        <script>
-        // Fetch data from /api/data endpoint
-        fetch('/api/data')
-            .then(response => {
-                if (!response.ok) {  // verifier si la reponse est ok
-                    throw new Error('Server error: ' + response.statusText);
-                }
-                return response.json();  // Parse JSON
-            })
-            .then(data => {
-                console.log('Fetched data:', data);
+const container = document.getElementById("card-container");
 
-                // Check if data is an array or js obj
-                if (Array.isArray(data) && data.length > 0) {
-                    const container = document.getElementById('ville-container');
-                    // Get the first object from the array
-                    const villeData = data[0];
-                    if (villeData && villeData.ville) {  // verifier si villedata existe et contient une ville (no)
-                        const div = document.createElement('div');
-                        div.innerHTML = `Ville: ${villeData.ville}`; //pour affichage
-                        container.appendChild(div);  // ajouter div a la page html
-                    } else {
-                        console.error('Expected an object with ville but got:', villeData); // else de (villeData && villeData.ville) pour catch err si ville.ville nexsite pas 
-                    }
-                } else {
-                    console.error('Expected an array:', data); // else de (Array.isArray(data) && data.length > 0) pour catch err si data n'est pas un array
-                }
-            })
-            .catch(error => console.error('Error fetching data:', error)); // catch err si il ya une erreur lors de la requete
+if (container) {
+  cardsData.forEach((card) => {
+    const cardElement = document.createElement("div");
+    cardElement.className = "lacarte";
+    cardElement.innerHTML = `
+      <div class="maincontainer">
+        <div class="thecard">
+          <div class="thefront" style="background-image: url('${card.photo}');">
+          </div>
+          <div class="theback">
+            <h2 class="nomsport">${card.title}</h2>
+            <p class="parasport">${card.description}</p>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(cardElement);
+  });
+} else {
+  console.error("Container element not found");
+}
+
     </script>
+
     <script src="script.js"></script>
 </body>
 </html>
