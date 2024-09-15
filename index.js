@@ -97,7 +97,7 @@ app.get("/", (req, res) => {
 
 app.listen (port, () => {
   console.log(`run serverr`);
-  // open("http://localhost:3000/Homepage");
+   open("http://localhost:3000/Homepage");
 
 });
 
@@ -133,8 +133,19 @@ app.get("/Activities", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Activities.html"));
 });
 
+// app.get("/Reservations", (req, res) => {
+//  res.sendFile(path.join(__dirname, "public", "Reservations.html"));
+// });
+
+
 app.get("/Reservations", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "Reservations.html"));
+  res.sendFile(path.join(__dirname, "public", "reserve.html"));
+});
+
+
+
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "profile.html"));
 });
 
 // test fetch on Homepage
@@ -197,7 +208,7 @@ app.post("/Login", async (req, res) => {
     const sqlQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
     const [result] = await dbConn.execute(sqlQuery, [email, md5(password)]);
 
-    res.send("Login successful");
+    // res.send("Login successful");
   } catch (error) {
     console.log("erreur insertion", error);
     res.status(500).send("Database error");
@@ -255,7 +266,9 @@ app.post("/Validate", async (req, res) => {
       };
 
       
-      return res.redirect("/Accueil"); //pour aller vrs page daccueil
+      setTimeout(() => {
+        return res.redirect("/Accueil"); // Redirect after 2 seconds
+      }, 2000); //pour aller vrs page daccueil
     } else {
       return res.status(401).send("Invalid credentials");
     }
@@ -453,7 +466,7 @@ app.post('/api/reservations', async (req, res) => {
 // to display sessions disponibles
 
 
-// Endpoint to fetch sessions
+// fetch sessions
 app.get('/api/sessions', async (req, res) => {
     let dbConn;
     try {
@@ -522,13 +535,19 @@ app.delete("/api/reservations/:id", async (req, res) => {
   }
 
   const reservationId = req.params.id;
+ // const sessionId = req.session.id_session.id;
 
   try {
     const dbConn = await dbConnection();
+    // await dbConn.execute(
+    //  "UPDATE sessions SET place_disponible = place_disponible + 1 WHERE id_session = ?",
+  //    [sessionId]
+  //  );
     const [result] = await dbConn.execute(
       "DELETE FROM reservations WHERE id_reservation = ?",
       [reservationId]
     );
+    
 
     res.send("Reservation cancelled successfully");
   } catch (error) {
@@ -538,3 +557,75 @@ app.delete("/api/reservations/:id", async (req, res) => {
 });
 
 
+// fetch user info for profile html
+
+app.get("/getUserInfo", async (req, res) => {
+  let dbConn;
+  const userId = req.session.user.id;
+  try {
+    dbConn = await dbConnection();
+    const { nom, prenom, telephone, email } = req.body;
+
+    // Assuming user ID is stored in the session
+  //  const userId = req.session.userId;
+  //  if (!userId) {
+   //   return res.status(401).send("User not authenticated");
+  //  }
+
+    const sqlQuery =
+      "SELECT nom, prenom, telephone, email FROM users WHERE id_user = ?";
+    const [rows] = await dbConn.execute(sqlQuery, [userId]);
+
+    //if (rows.length === 0) {
+     // return res.status(404).send("User not found");
+    //}
+
+    res.json(rows);
+  } catch (error) {
+    console.log("Database error:", error);
+    res.status(500).send("Database error");
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
+
+
+
+
+
+
+// update profile
+
+app.post("/updateUserInfo", async (req, res) => {
+  let dbConn;
+  try {
+    dbConn = await dbConnection();
+
+    const { nom, prenom, telephone, email } = req.body;
+    const userId = req.session.userId;
+//////////////////////////////////////////////////////
+
+
+
+
+
+    if (!userId) {
+      return res.status(401).send("User not authenticated");
+    }
+
+    const sqlQuery =
+      "UPDATE users SET nom = ?, prenom = ?, telephone = ?, email = ? WHERE id_user = ?";
+    await dbConn.execute(sqlQuery, [nom, prenom, telephone, email, userId]);
+
+    res.send("User information updated successfully");
+  } catch (error) {
+    console.log("Database error:", error);
+    res.status(500).send("Database error");
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});

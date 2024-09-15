@@ -29,8 +29,8 @@ async function SignUp() {
       body: JSON.stringify({ nom, prenom, telephone, email, password }),
     });
 
-    const result = await response.text();
-    logMessages.innerHTML = result;
+   // const result = await response.text();
+  //  logMessages.innerHTML = result;
 
     if (response.ok) {
       // Show success alert
@@ -134,12 +134,14 @@ async function Validate() {
     });
 
     const result = await response.text();
-    logMessages.innerHTML = result;
+   // logMessages.innerHTML = result;
 
     if (response.ok) {
       document.getElementById("login-email").value = "";
       document.getElementById("login-password").value = "";
-      window.location.href = "Accueil.html";
+      setTimeout(() => {
+        window.location.href = "Accueil.html";
+      }, 500);
     }
   } catch (error) {
     logMessages.innerHTML = "erreur  " + error.message;

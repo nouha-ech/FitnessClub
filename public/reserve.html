@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymClub - Reservations</title>
+   <link href="reservation.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h4 class="logo">FITNESS CLUB</h4>
+        <nav class="navigation">
+            <a href="Accueil">Les sessions disponibles</a>
+            <a href="profile">Compte</a>
+            <a href="Homepage">Se déconnecter</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1>Mes réservations</h1>
+        <div id="reservations-container"></div>
+    </div>
+
+    <script>
+        // Fetch reservations from the server
+        fetch('/api/reservations', {
+            method: 'GET',
+            credentials: 'include' // Include cookies in request
+        })
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('reservations-container');
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>ID Reservation</th>
+                        <th>Session</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Cancel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(reservation => `
+                        <tr>
+                            <td>${reservation.id_reservation}</td>
+                            <td>${reservation.nom_session}</td>
+                            <td>${reservation.date_session}</td>
+                            <td>${reservation.heure_session}</td>
+                            <td><button onclick="cancelReservation(${reservation.id_reservation})">Cancel</button></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            container.appendChild(table);
+        })
+        .catch(error => console.error('Error fetching reservations:', error));
+
+        // Function to cancel a reservation
+        function cancelReservation(reservationId) {
+            if (confirm('Are you sure you want to cancel this reservation?')) {
+                fetch(`/api/reservations/${reservationId}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Reservation cancelled successfully');
+                            location.reload(); // Reload page after cancellation
+                        } else {
+                            alert('Error cancelling reservation');
+                        }
+                    })
+                    .catch(error => console.error('Error cancelling reservation:', error));
+            }
+        }
+    </script>
+</body>
+</html>

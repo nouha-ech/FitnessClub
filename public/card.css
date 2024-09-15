@@ -27,7 +27,7 @@ header {
 .logo {
     text-decoration: none;
     display: flex;
-    color:  #0b102cf8;
+    color:  white;
     font-weight: bold;
     font-size: 2em;
     margin-left: 7%;
@@ -42,7 +42,7 @@ header {
 
 .navigation a {
     margin: 10px;
-    color: black;
+    color: white;
     text-decoration: none;
     font-size: 1.1em;
     border-bottom: solid 2px transparent; /* Bordure inférieure par défaut, transparente */

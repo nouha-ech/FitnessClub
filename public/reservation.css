@@ -1,0 +1,47 @@
+
+table {
+    width: 100%;
+    border-collapse: collapse; 
+    margin: 20px 0;
+}
+
+/* Style des en-têtes du tableau */
+table th {
+    text-transform: uppercase;
+    background-color: #4a4a4a; 
+    color: #ffffff; 
+    padding: 10px;
+    border: 2px solid #333333;
+}
+
+/* Style des cellules du tableau */
+table td {
+    padding: 10px;
+    border: 1px solid #cccccc; 
+    font-size: 1rem; 
+}
+
+/* Style des lignes de tableau */
+table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Couleur de fond pour les lignes paires */
+}
+
+table tr:nth-child(odd) {
+    background-color: #ffffff; /* Couleur de fond pour les lignes impaires */
+}
+
+/* Style du bouton de suppression */
+.botona {
+    margin-left: 40%;
+    background-color:  #e60000;
+    color: #ffffff;
+    padding: 0.5rem 1rem; 
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botona:hover {
+    background-color:  #7a0c0c ; 
+}

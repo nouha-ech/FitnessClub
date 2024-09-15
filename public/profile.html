@@ -3,75 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Mon Compte</title>
+    <link rel="stylesheet" href="compte.css">
 </head>
 <body>
-   
-              
+    <div class="account-container">
+        <h4>Mon Compte</h4>
+        <hr>
+        <form id="account-form">
+            <div>
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" placeholder="Nom">
+            </div>
+            <div>
+                <label for="prenom">Prénom</label>
+                <input type="text" id="prenom" name="prenom" placeholder="Prenom" required>
+            </div>
+            <div>
+                <label for="telephone">Numéro de téléphone</label>
+                <input type="text" id="telephone" name="telephone" placeholder="Telephone" required>
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+            <button type="button" id="modifier-btn" class="submit-button" onclick="modifier()">Modifier Info</button>
+            <button type="submit" id="save-btn" class="submit-button" style="display: none;">Sauvegarder</button>
+        </form>
 
-     <div id="data-container"></div>
-      <div id="ville-container"></div>
+        <div id="update-messages"></div>
+    </div>
+    <script>
 
-        <script>
-        // Fetch data from /api/data endpoint
-        fetch('/api/data')
-            .then(response => {
-                if (!response.ok) {  // verifier si la reponse est ok
-                    throw new Error('Server error: ' + response.statusText);
-                }
-                return response.json();  // Parse JSON
-            })
-            .then(data => {
-                console.log('Fetched data:', data);
+window.onload = async function() {
+    try {
+        const response = await fetch("/getUserInfo");
+        const userInfo = await response.json();
 
-                // Check if data is an array or js obj
-                if (Array.isArray(data) && data.length > 0) {
-                    const container = document.getElementById('ville-container');
-                    // Get the first object from the array
-                    const villeData = data[0];
-                    if (villeData && villeData.ville) {  // verifier si villedata existe et contient une ville (no)
-                        const div = document.createElement('div');
-                        div.innerHTML = `Ville: ${villeData.ville}`; //pour affichage
-                        container.appendChild(div);  // ajouter div a la page html
-                    } else {
-                        console.error('Expected an object with ville but got:', villeData); // else de (villeData && villeData.ville) pour catch err si ville.ville nexsite pas 
-                    }
-                } else {
-                    console.error('Expected an array:', data); // else de (Array.isArray(data) && data.length > 0) pour catch err si data n'est pas un array
-                }
-            })
-            .catch(error => console.error('Error fetching data:', error));
-            
-            // catch err si il ya une erreur lors de la requete
-
-            async function fetchActivities() {
-  try {
-    const response = await fetch("/Activities");
-    if (!response.ok) {
-      throw new Error("Network res was not ok");
+        if (response.ok) {
+            document.getElementById("nom").value = userInfo.nom;
+            document.getElementById("prenom").value = userInfo.prenom;
+            document.getElementById("telephone").value = userInfo.telephone;
+            document.getElementById("email").value = userInfo.email;
+        } else {
+            document.getElementById("update-messages").innerText = "Erreur de chargement des informations";
+        }
+    } catch (error) {
+        document.getElementById("update-messages").innerText = "Erreur: " + error.message;
     }
-    const Activities = await response.json();
-    displayActivities(Activities);
-  } catch (error) {
-    console.error("Error fetching activities:", error);
-  }
+};
+
+
+function modifier() {
+    document.getElementById("nom").disabled = false;
+    document.getElementById("prenom").disabled = false;
+    document.getElementById("telephone").disabled = false;
+    document.getElementById("email").disabled = false;
+    document.getElementById("nom").style.pointerEvents = "auto";
+    document.getElementById("prenom").style.pointerEvents = "auto";
+    document.getElementById("telephone").style.pointerEvents = "auto";
+    document.getElementById("email").style.pointerEvents = "auto";
+
+    // Show Save button and hide Modifier button
+    document.getElementById("modifier-btn").style.display = "none";
+    document.getElementById("save-btn").style.display = "block";
 }
 
-function displayActivities(Activities) {
-  const container = document.getElementById("activity-container");
-  container.innerHTML = Activities.map(
-    (Activities) => `
-                <div class="activity-card">
-                    <img src="${activity.image_url}" alt="${activity.name}">
-                    <h2>${activity.name}</h2>
-                    <p>${activity.description}</p>
-                </div>
+// Submit updated user info
+document.getElementById("account-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-            `
-  ).join("");
+    const nom = document.getElementById("nom").value;
+    const prenom = document.getElementById("prenom").value;
+    const telephone = document.getElementById("telephone").value;
+    const email = document.getElementById("email").value;
+    const logMessages = document.getElementById("update-messages");
+
+    try {
+        const response = await fetch("/updateUserInfo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nom, prenom, telephone, email }),
+        })
+        .then(response => response.json())
+        .then(data => populateForm(data));
+
+
+        const result = await response.text();
+        logMessages.innerHTML = result;
+
+        if (response.ok) {
+            alert("Informations mises à jour avec succès!");
+
+            // Disable the fields again
+            document.getElementById("nom").disabled = true;
+            document.getElementById("prenom").disabled = true;
+            document.getElementById("telephone").disabled = true;
+            document.getElementById("email").disabled = true;
+            document.getElementById("nom").style.pointerEvents = "none";
+            document.getElementById("prenom").style.pointerEvents = "none";
+            document.getElementById("telephone").style.pointerEvents = "none";
+            document.getElementById("email").style.pointerEvents = "none";
+
+            // Switch back buttons
+            document.getElementById("modifier-btn").style.display = "block";
+            document.getElementById("save-btn").style.display = "none";
+        }
+    } catch (error) {
+        logMessages.innerHTML = "Erreur: " + error.message;
+    }
+});
+
+function populateForm(userInfo) {
+    document.getElementById('nom').value = userInfo.nom || 'Nom';
+    document.getElementById('prenom').value = userInfo.prenom || 'Prenom';
+    document.getElementById('telephone').value = userInfo.telephone || 'Telephone';
+    document.getElementById('email').value = userInfo.email || 'Email';
 }
 
-fetchActivities();
+
     </script>
 </body>
 </html>
