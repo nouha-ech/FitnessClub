@@ -72,7 +72,7 @@ table tr:nth-child(odd) {
 }
 
 /* Style du bouton de suppression */
-.botona {
+button {
     margin-left: 40%;
     background-color:  #e60000;
     color: #ffffff;
@@ -83,6 +83,6 @@ table tr:nth-child(odd) {
     transition: background-color 0.3s ease;
 }
 
-.botona:hover {
+button:hover {
     background-color:  #7a0c0c ; 
 }

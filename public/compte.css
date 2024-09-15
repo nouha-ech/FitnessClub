@@ -10,6 +10,8 @@ body {
     font-family: Arial, sans-serif;
 }
 
+
+
 .account-container {
     width: 500px;
     background-color: rgba(246, 246, 255, 0.816);
@@ -40,10 +42,9 @@ input[type="email"] {
     font-size: 1.2em;
     box-sizing: border-box;
     background-color: lightgray;
-    pointer-events: none; /* Initially disable editing */
 }
 
-.submit-button {
+button {
     border-radius: 10px;
     padding: 15px;
     background-color: #ad0000;

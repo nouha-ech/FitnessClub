@@ -133,14 +133,14 @@ app.get("/Activities", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Activities.html"));
 });
 
-// app.get("/Reservations", (req, res) => {
-//  res.sendFile(path.join(__dirname, "public", "Reservations.html"));
+//app.get("/Reservations", (req, res) => {
+// res.sendFile(path.join(__dirname, "public", "Reservations.html"));
 // });
 
 
-app.get("/Reservations", (req, res) => {
+ app.get("/Reservations", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "reserve.html"));
-});
+ });
 
 
 
@@ -268,7 +268,7 @@ app.post("/Validate", async (req, res) => {
       
       setTimeout(() => {
         return res.redirect("/Accueil"); // Redirect after 2 seconds
-      }, 2000); //pour aller vrs page daccueil
+      }, 100); //pour aller vrs page daccueil
     } else {
       return res.status(401).send("Invalid credentials");
     }
@@ -598,31 +598,42 @@ app.get("/getUserInfo", async (req, res) => {
 
 // update profile
 
-app.post("/updateUserInfo", async (req, res) => {
+// Update user profile using PATCH method
+app.patch("/updateUserInfo", async (req, res) => {
   let dbConn;
+  const userId = req.session.user.id;
   try {
     dbConn = await dbConnection();
+  
+    const { nom, prenom, telephone, email } = req.body; // Get updated data from the request body
 
-    const { nom, prenom, telephone, email } = req.body;
-    const userId = req.session.userId;
-//////////////////////////////////////////////////////
-
-
-
-
-
-    if (!userId) {
-      return res.status(401).send("User not authenticated");
+    // Check if all required fields are provided
+    if (!nom || !prenom || !telephone || !email) {
+      return res.status(400).json({
+        message: "All fields (nom, prenom, telephone, email) are required",
+      });
     }
 
+    // Execute the update query
     const sqlQuery =
       "UPDATE users SET nom = ?, prenom = ?, telephone = ?, email = ? WHERE id_user = ?";
-    await dbConn.execute(sqlQuery, [nom, prenom, telephone, email, userId]);
+    const [result] = await dbConn.execute(sqlQuery, [
+      nom,
+      prenom,
+      telephone,
+      email,
+      userId,
+    ]);
 
-    res.send("User information updated successfully");
+    // Check if the user was found and updated
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User information updated successfully" });
   } catch (error) {
-    console.log("Database error:", error);
-    res.status(500).send("Database error");
+    console.error("Database error:", error);
+    res.status(500).json({ message: "Database error" });
   } finally {
     if (dbConn) {
       await dbConn.end();
