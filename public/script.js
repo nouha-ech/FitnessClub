@@ -1,6 +1,3 @@
-
-// sign up func
-
 async function SignUp() {
   const nom = document.getElementById("nom").value;
   const prenom = document.getElementById("prenom").value;
@@ -10,7 +7,7 @@ async function SignUp() {
   const confirmPassword = document.getElementById("confirmpassword").value;
   const logMessages = document.getElementById("log-messages");
 
-  // Validate passwords
+  
   if (password !== confirmPassword) {
     logMessages.innerHTML = "Les mots de passe ne correspondent pas.";
     return;
@@ -33,10 +30,10 @@ async function SignUp() {
   //  logMessages.innerHTML = result;
 
     if (response.ok) {
-      // Show success alert
+     
       alert("Inscription réussie!");
 
-      // Redirect to login page
+ 
       window.location.href = "login.html";
     }
   } catch (error) {
@@ -44,7 +41,7 @@ async function SignUp() {
   }
 }
 
-// register func
+
 
 async function register() {
   const nom = document.getElementById("nom").value;
@@ -82,7 +79,7 @@ async function register() {
   }
 }
 
-// login func
+
 
 async function Login() {
   const email = document.getElementById("login-email").value;
