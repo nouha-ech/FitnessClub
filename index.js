@@ -1,29 +1,25 @@
-import mysql from "mysql2/promise";  // pour mysql
-import dotenv from "dotenv";    // pour env var
-import express from "express";  // pour express
+import mysql from "mysql2/promise";
+import dotenv from "dotenv";
+import express from "express";
 import session from "express-session";
-import path from "path";   // pour creer chemin
-import { fileURLToPath } from "url";  // pour convrtir url
-const { default: open } = await import("open"); // ouverture automatique du navigateur
-// used await was needed bc of async (speed of )
-// import {  session }  from "express-session";
-
-import cors from "cors";  // pour cors AKA cross origin resource sharing
-// on utlise cors pour pouvoir communiquer avec le serveur (let us share data from port)
-import bodyParser from "body-parser";   // pour parser les requetes
-dotenv.config();
+import path from "path";
+import { fileURLToPath } from "url";
+const { default: open } = await import("open");
+import cors from "cors";
+import bodyParser from "body-parser";
+import { createHash } from "crypto";
 import md5 from "md5";
-
+dotenv.config();
 const port = 3000;
 
-import { createHash } from "crypto";  // pour crypter les passwords
+
 
 async function dbConnection() {
     try {
     const dbConn = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: process.env.password, // used .env for security
+      password: process.env.password,
       database: "FitnessClub",
       port: 3306,
     });
@@ -36,7 +32,6 @@ async function dbConnection() {
 }
 
 
-// test query func
 async function quer(dbConn) {
   try {
     const [rows] = await dbConn.execute(
@@ -60,7 +55,7 @@ async function quer(dbConn) {
   } finally {
     if (dbConn && dbConn.end) {
       try {
-        await dbConn.end();    // fermer con
+        await dbConn.end();
       } catch (closeErr) {
         console.error("closing conn error", closeErr.message);
       }
@@ -70,10 +65,10 @@ async function quer(dbConn) {
 
 
 const app = express();
-app.use(cors());  // for cors
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false })); // for body parser
-app.use(express.json()); 
+app.use(express.json());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -86,7 +81,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // for http 
+    cookie: { secure: false }, // for http
   })
 );
 
@@ -133,25 +128,15 @@ app.get("/Activities", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Activities.html"));
 });
 
-//app.get("/Reservations", (req, res) => {
-// res.sendFile(path.join(__dirname, "public", "Reservations.html"));
-// });
-
-
  app.get("/Reservations", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "reserve.html"));
  });
-
-
 
 app.get("/profile", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "profile.html"));
 });
 
-// test fetch on Homepage
 
-
-// Route to fetch DNOM and ville from departements table
 app.get("/api/data", async (req, res) => {
   let dbConn;  // necessaire pour fermer la con a la fin
   try {
@@ -178,26 +163,6 @@ app.get("/api/data", async (req, res) => {
 });
 
 
-// code not working yet so tried to install cors bc
-// Failed to load resource: the server responded with a status of 500 (Internal Server Error)
-// Error fetching data: SyntaxError: Unexpected token 'S', "Server error" is not valid JSON
-
-// code did not work bc of cors absence and also bc of syntax error front was expecting
-// an array while my sql returned an object
-// prob in db conn scope
-
-// corrected code try catch + syntax error + opened con inside app get req and it worked!!
-// front received array of obj not just one 
-// WORKEDDD
-
-
-
-
-
-
-// test dinsertion into db
-// gonna use async + try catch here too
-
 app.post("/Login", async (req, res) => {
   let dbConn;
   try {
@@ -219,12 +184,6 @@ app.post("/Login", async (req, res) => {
   }
 });
 
-// insertion didnt work
-//  issue maybe on loginUsername, loginPassword
-// issue on line 165 const [result] = await dbConn.execute(sqlQuery, [loginUsername,loginPassword,]);
-// issue was syntax err with db but now WORKEDD
-
-
 function hashpassword(password) {
   return createHash('md5').update(password).digest('hex');
 
@@ -242,11 +201,10 @@ console.log('test hash:', testHash);
 app.post("/Validate", async (req, res) => {
   let dbConn;
   try {
-    dbConn = await dbConnection(); // 
+    dbConn = await dbConnection();
 
     const { email, password } = req.body;
 
-    // Query to get hashed password and user ID
     const sqlQuery = "SELECT mdp, id_user FROM users WHERE email = ?";
     const [rows] = await dbConn.execute(sqlQuery, [email]);
 
@@ -282,9 +240,6 @@ app.post("/Validate", async (req, res) => {
   }
 });
 
-
-
-// card activité
 
 app.get("/activities", async (req, res) => {
   let dbConn;
@@ -333,10 +288,7 @@ async function SignUp() {
     logMessages.innerHTML = result;
 
     if (response.ok) {
-      // Show success alert
       alert("Inscription réussie!");
-
-      // Redirect to login page
       window.location.href = "login.html";
     }
   } catch (error) {
@@ -355,7 +307,6 @@ app.post("/SignUp", async (req, res) => {
 
     const { nom, prenom, telephone, email, password } = req.body;
 
-    // check if mail exist
     const checkEmailQuery = "SELECT * FROM users WHERE email = ?";
     const [existingUser] = await dbConn.execute(checkEmailQuery, [email]);
 
@@ -416,7 +367,6 @@ app.post("/Register", async (req, res) => {
   }
 });
 
-// to create reservations
 
 
 // Endpoint to create a reservation
@@ -537,10 +487,8 @@ app.get("/api/reservations", async (req, res) => {
 
     dbConn = await dbConnection();
 
-    // Fetch user ID from  session
     const userId = req.session.user.id;
 
-    // Query to get reservations for the logged-in user
     const sqlQuery = `
       SELECT r.id_reservation, s.nom_session, s.date_session, s.heure_session
       FROM reservations r
@@ -573,7 +521,6 @@ app.delete("/api/reservations/:id", async (req, res) => {
   try {
     const dbConn = await dbConnection();
 
-    // First, retrieve the session ID associated with the reservation
     const [reservation] = await dbConn.execute(
       "SELECT id_session FROM reservations WHERE id_reservation = ?",
       [reservationId]
@@ -585,13 +532,11 @@ app.delete("/api/reservations/:id", async (req, res) => {
 
     const sessionId = reservation[0].id_session;
 
-    // Increment the available slots for the corresponding session
     await dbConn.execute(
       "UPDATE sessions SET place_disponible = place_disponible + 1 WHERE id_session = ?",
       [sessionId]
     );
 
-    // Delete the reservation
     await dbConn.execute("DELETE FROM reservations WHERE id_reservation = ?", [
       reservationId,
     ]);
