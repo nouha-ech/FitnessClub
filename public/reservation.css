@@ -1,3 +1,44 @@
+header {
+    background-color: #1e3263c9;
+    width: 100%;
+    display: flex;
+    position: fixed;
+    top:0;
+    height: 80px;
+    left: 0;
+    z-index: 5;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s color 0.3s;
+} 
+
+ 
+
+.logo {
+    text-decoration: none;
+    display: flex;
+    color:  white;
+    font-weight: bold;
+    font-size: 2em;
+    margin-left: 7%;
+}
+
+/* Style pour la navigation */
+.navigation {
+    display: flex;
+    align-items: center;
+}
+
+
+.navigation a {
+    margin: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    border-bottom: solid 2px transparent; /* Bordure inférieure par défaut, transparente */
+    transition: border-bottom-color 0.3s; /* Transition pour la couleur de la bordure inférieure */
+}
+
 
 table {
     width: 100%;
