@@ -497,7 +497,40 @@ app.get("/api/reservations", async (req, res) => {
   let dbConn;
   try {
     console.log("Session Data After Login:", req.session);
-    
+
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+
+    dbConn = await dbConnection();
+
+    // Fetch user ID from  session
+    const userId = req.session.user.id;
+
+    // Query to get reservations for the logged-in user
+    const sqlQuery = `
+      SELECT r.id_reservation, s.nom_session, s.date_session, s.heure_session
+      FROM reservations r
+      JOIN sessions s ON r.id_session = s.id_session
+      WHERE r.id_user = ?
+    `;
+    const [rows] = await dbConn.execute(sqlQuery, [userId]);
+
+    res.json(rows); // Send reservations as JSON
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
+});
+app.get("/api/reservations", async (req, res) => {
+  let dbConn;
+  try {
+    console.log("Session Data After Login:", req.session);
+
     if (!req.session.user || !req.session.user.id) {
       return res.status(401).json({ error: "User not authenticated" });
     }
@@ -529,32 +562,47 @@ app.get("/api/reservations", async (req, res) => {
 
 
 
+
 app.delete("/api/reservations/:id", async (req, res) => {
   if (!req.session || !req.session.user) {
     return res.status(401).send("User not authenticated");
   }
 
   const reservationId = req.params.id;
- // const sessionId = req.session.id_session.id;
 
   try {
     const dbConn = await dbConnection();
-    // await dbConn.execute(
-    //  "UPDATE sessions SET place_disponible = place_disponible + 1 WHERE id_session = ?",
-  //    [sessionId]
-  //  );
-    const [result] = await dbConn.execute(
-      "DELETE FROM reservations WHERE id_reservation = ?",
+
+    // First, retrieve the session ID associated with the reservation
+    const [reservation] = await dbConn.execute(
+      "SELECT id_session FROM reservations WHERE id_reservation = ?",
       [reservationId]
     );
-    
 
-    res.send("Reservation cancelled successfully");
+    if (reservation.length === 0) {
+      return res.status(404).send("Reservation not found");
+    }
+
+    const sessionId = reservation[0].id_session;
+
+    // Increment the available slots for the corresponding session
+    await dbConn.execute(
+      "UPDATE sessions SET place_disponible = place_disponible + 1 WHERE id_session = ?",
+      [sessionId]
+    );
+
+    // Delete the reservation
+    await dbConn.execute("DELETE FROM reservations WHERE id_reservation = ?", [
+      reservationId,
+    ]);
+
+    res.send("Reservation cancelled and session slot updated successfully");
   } catch (error) {
     console.error("Error cancelling reservation:", error);
     res.status(500).send("Server error");
   }
 });
+
 
 
 // fetch user info for profile html
