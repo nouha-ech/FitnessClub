@@ -38,13 +38,19 @@
 window.onload = async function() {
     try {
         const response = await fetch("/getUserInfo");
-        const userInfo = await response.json();
+        const userInfoArray = await response.json();
 
-        if (response.ok) {
-            document.getElementById("nom").value = userInfo.nom;
-            document.getElementById("prenom").value = userInfo.prenom;
-            document.getElementById("telephone").value = userInfo.telephone;
-            document.getElementById("email").value = userInfo.email;
+        // Log the array and the first object to check its content
+        console.log("API Response:", userInfoArray);
+        console.log("First User Info Object:", userInfoArray[0]);
+
+        if (response.ok && userInfoArray.length > 0) {
+            const userInfo = userInfoArray[0];
+            document.getElementById("nom").placeholder = userInfo.nom ;
+            document.getElementById("prenom").placeholder = userInfo.prenom || "Prenom";
+            document.getElementById("telephone").placeholder = userInfo.telephone || "Telephone";
+            document.getElementById("email").placeholder = userInfo.email || "Email";
+            console.log(userInfo);
         } else {
             document.getElementById("update-messages").innerText = "Erreur de chargement des informations";
         }
