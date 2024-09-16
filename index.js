@@ -5,7 +5,6 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 const { default: open } = await import("open");
-import cors from "cors";
 import bodyParser from "body-parser";
 import { createHash } from "crypto";
 import md5 from "md5";
@@ -31,48 +30,15 @@ async function dbConnection() {
   }
 }
 
-
-async function quer(dbConn) {
-  try {
-    const [rows] = await dbConn.execute(
-      "SELECT activity_description FROM activities WHERE activity_name = ?",
-      ["Pilates"]
-    );
-    console.log('res', rows);
-    }
-    catch(querErr) {
-      console.error('query error:', querErr.message);
-    }
-}
-
-(async () => {
-  let dbConn;
-  try {
-    dbConn = await dbConnection();
-    await quer(dbConn);
-  } catch (error) {
-    console.error('An error occurred:', error.message);
-  } finally {
-    if (dbConn && dbConn.end) {
-      try {
-        await dbConn.end();
-      } catch (closeErr) {
-        console.error("closing conn error", closeErr.message);
-      }
-    }
-  }
-})();
-
-
 const app = express();
-app.use(cors());
+
 
 app.use(bodyParser.urlencoded({ extended: false })); // for body parser
 app.use(express.json());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  console.log(`Protocol: ${req.protocol}`); // Logs 'http' or 'https'
+  // console.log(`Protocol: ${req.protocol}`);
   next();
 });
 
@@ -223,10 +189,8 @@ app.post("/Validate", async (req, res) => {
         authenticated: true,
       };
 
-      
       setTimeout(() => {
-        return res.redirect("/Accueil"); // Redirect after 2 seconds
-      }, 100); //pour aller vrs page daccueil
+        return res.redirect("/Accueil");}, 100); //pour aller vrs page daccueil
     } else {
       return res.status(401).send("Invalid credentials");
     }
@@ -245,9 +209,7 @@ app.get("/activities", async (req, res) => {
   let dbConn;
   try {
     dbConn = await dbConnection();
-       const [rows] = await dbConn.query(
-         "SELECT activity_name, activity_description FROM activities"
-       );
+       const [rows] = await dbConn.query("SELECT activity_name, activity_description FROM activities");
     res.json(rows);
   } catch (error) {
     console.error('Error:', error);
@@ -314,17 +276,9 @@ app.post("/SignUp", async (req, res) => {
       return res.status(400).send("Email already registered");
     }
 
-    // Insert new user into database
-    const sqlQuery =
-      "INSERT INTO users (nom, prenom, telephone, email, mdp) VALUES (?, ?, ?, ?, ?)";
+    const sqlQuery = "INSERT INTO users (nom, prenom, telephone, email, mdp) VALUES (?, ?, ?, ?, ?)";
     const hashedPassword = md5(password); // Hash the password
-    await dbConn.execute(sqlQuery, [
-      nom,
-      prenom,
-      telephone,
-      email,
-      hashedPassword,
-    ]);
+    await dbConn.execute(sqlQuery, [nom,prenom,telephone,email,hashedPassword,]);
 
     res.send("Inscription réussie");
   } catch (error) {
@@ -410,12 +364,6 @@ app.post('/api/reservations', async (req, res) => {
 });
 
 
-
-
-
-// to display sessions disponibles
-
-
 // fetch sessions
 app.get('/api/sessions', async (req, res) => {
     let dbConn;
@@ -454,10 +402,8 @@ app.get("/api/reservations", async (req, res) => {
 
     dbConn = await dbConnection();
 
-    // Fetch user ID from  session
     const userId = req.session.user.id;
 
-    // Query to get reservations for the logged-in user
     const sqlQuery = `
       SELECT r.id_reservation, s.nom_session, s.date_session, s.heure_session
       FROM reservations r
@@ -559,19 +505,10 @@ app.get("/getUserInfo", async (req, res) => {
     dbConn = await dbConnection();
     const { nom, prenom, telephone, email } = req.body;
 
-    // Assuming user ID is stored in the session
-  //  const userId = req.session.userId;
-  //  if (!userId) {
-   //   return res.status(401).send("User not authenticated");
-  //  }
 
     const sqlQuery =
       "SELECT nom, prenom, telephone, email FROM users WHERE id_user = ?";
     const [rows] = await dbConn.execute(sqlQuery, [userId]);
-
-    //if (rows.length === 0) {
-     // return res.status(404).send("User not found");
-    //}
 
     res.json(rows);
   } catch (error) {
@@ -585,22 +522,14 @@ app.get("/getUserInfo", async (req, res) => {
 });
 
 
-
-
-
-
 // update profile
-
-// Update user profile using PATCH method
 app.patch("/updateUserInfo", async (req, res) => {
   let dbConn;
   const userId = req.session.user.id;
   try {
     dbConn = await dbConnection();
-  
-    const { nom, prenom, telephone, email } = req.body; // Get updated data from the request body
+    const { nom, prenom, telephone, email } = req.body;
 
-    // Check if all required fields are provided
     if (!nom || !prenom || !telephone || !email) {
       return res.status(400).json({
         message: "All fields (nom, prenom, telephone, email) are required",
@@ -610,15 +539,8 @@ app.patch("/updateUserInfo", async (req, res) => {
     // Execute the update query
     const sqlQuery =
       "UPDATE users SET nom = ?, prenom = ?, telephone = ?, email = ? WHERE id_user = ?";
-    const [result] = await dbConn.execute(sqlQuery, [
-      nom,
-      prenom,
-      telephone,
-      email,
-      userId,
-    ]);
-
-    // Check if the user was found and updated
+    const [result] = await dbConn.execute(sqlQuery,
+      [nom,prenom,telephone,email,userId,]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "User not found" });
     }
