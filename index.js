@@ -85,14 +85,6 @@ app.get("/Signup", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Signup.html"));
 });
 
-app.get("/Validate", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "Validate.html"));
-});
-
-
-app.get("/Activities", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "Activities.html"));
-});
 
  app.get("/Reservations", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "reserve.html"));
@@ -100,32 +92,6 @@ app.get("/Activities", (req, res) => {
 
 app.get("/profile", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "profile.html"));
-});
-
-
-app.get("/api/data", async (req, res) => {
-  let dbConn;  // necessaire pour fermer la con a la fin
-  try {
-    console.log("Fetching data from the database...");
-    dbConn = await dbConnection(); // Create a new connection for each request
-    const [rows] = await dbConn.execute(
-      "SELECT activity_description FROM activities WHERE activity_name = ?", // query
-      ["Pilates"] // parameters
-    );
-    console.log("Query successful:", rows);
-    res.json(rows); // Send the results as JSON
-  } catch (queryErr) {
-    console.error("Query error:", queryErr.message);
-    res.status(500).json({ error: "Server error" }); // Send a JSON error response
-  } finally {
-    if (dbConn && dbConn.end) {
-      try {
-        await dbConn.end(); // Close connection
-      } catch (closeErr) {
-        console.error("Closing connection error", closeErr.message);
-      }
-    }
-  }
 });
 
 
@@ -139,7 +105,6 @@ app.post("/Login", async (req, res) => {
     const sqlQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
     const [result] = await dbConn.execute(sqlQuery, [email, md5(password)]);
 
-    // res.send("Login successful");
   } catch (error) {
     console.log("erreur insertion", error);
     res.status(500).send("Database error");
@@ -217,17 +182,6 @@ function isAuthenticated(req, res, next) {
 
 
 
-app.get("/activities", async (req, res) => {
-  let dbConn;
-  try {
-    dbConn = await dbConnection();
-       const [rows] = await dbConn.query("SELECT activity_name, activity_description FROM activities");
-    res.json(rows);
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Server error');
-  }
-});
 
 
 
@@ -557,7 +511,7 @@ app.patch("/updateUserInfo", async (req, res) => {
       });
     }
 
-    // Execute the update query
+    
     const sqlQuery =
       "UPDATE users SET nom = ?, prenom = ?, telephone = ?, email = ? WHERE id_user = ?";
     const [result] = await dbConn.execute(sqlQuery,

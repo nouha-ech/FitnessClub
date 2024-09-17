@@ -115,9 +115,6 @@ async function Validate() {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
   const logMessages = document.getElementById("log-messages");
-
-  //
-
   if (!email || !password) {
     logMessages.innerHTML = "enter your email and password";
     return;
@@ -131,9 +128,9 @@ async function Validate() {
     });
 
     const result = await response.text();
-   // logMessages.innerHTML = result;
 
     if (response.ok) {
+      alert("conexion réussie");
       document.getElementById("login-email").value = "";
       document.getElementById("login-password").value = "";
       setTimeout(() => {
