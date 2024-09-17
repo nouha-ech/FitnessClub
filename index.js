@@ -231,6 +231,32 @@ app.post("/Register", async (req, res) => {
 
 
 
+
+// fetch sessions
+app.get('/api/sessions', isAuthenticated, async (req, res) => {
+    let dbConn;
+    try {
+        dbConn = await dbConnection();
+
+        const sqlQuery = `
+            SELECT s.id_session, s.nom_session, s.date_session, s.heure_session, s.place_disponible
+            FROM sessions s
+        `;
+        const [rows] = await dbConn.execute(sqlQuery);
+
+        res.json(rows); 
+    } catch (error) {
+        console.error('Error fetching sessions:', error);
+        res.status(500).json({ error: 'Server error' });
+    } finally {
+        if (dbConn) {
+            await dbConn.end();
+        }
+    }
+});
+
+
+
 // Endpoint to create a reservation
 app.post("/api/reservations", isAuthenticated, async (req, res) => {
   let dbConn;
@@ -281,28 +307,7 @@ app.post("/api/reservations", isAuthenticated, async (req, res) => {
 });
 
 
-// fetch sessions
-app.get('/api/sessions', isAuthenticated, async (req, res) => {
-    let dbConn;
-    try {
-        dbConn = await dbConnection();
 
-        const sqlQuery = `
-            SELECT s.id_session, s.nom_session, s.date_session, s.heure_session, s.place_disponible
-            FROM sessions s
-        `;
-        const [rows] = await dbConn.execute(sqlQuery);
-
-        res.json(rows); 
-    } catch (error) {
-        console.error('Error fetching sessions:', error);
-        res.status(500).json({ error: 'Server error' });
-    } finally {
-        if (dbConn) {
-            await dbConn.end();
-        }
-    }
-});
 
 
 
