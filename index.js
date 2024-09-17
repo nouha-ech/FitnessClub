@@ -205,6 +205,19 @@ app.post("/Validate", async (req, res) => {
   }
 });
 
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.user && req.session.user.authenticated) {
+    next();
+  } else {
+      res
+        .status(401)
+        .send(
+          "<h1>Unauthorized</h1><p>You are not authorized to view this page. Please log in.</p>"
+        );
+  }
+}
+
+
 
 app.get("/activities", async (req, res) => {
   let dbConn;
@@ -325,48 +338,57 @@ app.post("/Register", async (req, res) => {
 
 
 // Endpoint to create a reservation
-app.post('/api/reservations', async (req, res) => {
-    let dbConn;
-    try {
-        if (!req.session.user || !req.session.user.id) {
-            return res.status(401).json({ error: 'User not authenticated' });
-        }
-
-        const { sessionId } = req.body;
-        if (!sessionId) {
-            return res.status(400).json({ error: 'Session ID is required' });
-        }
-
-        dbConn = await dbConnection();
-
-        const userId = req.session.user.id;
-
-        // Check if there are available places
-        const [session] = await dbConn.execute('SELECT place_disponible FROM sessions WHERE id_session = ?', [sessionId]);
-        if (session.length === 0 || session[0].place_disponible <= 0) {
-            return res.status(400).json({ error: 'No available places' });
-        }
-
-        // Create reservation
-        await dbConn.execute('INSERT INTO reservations (id_session, id_user) VALUES (?, ?)', [sessionId, userId]);
-
-        // Update available places
-        await dbConn.execute('UPDATE sessions SET place_disponible = place_disponible - 1 WHERE id_session = ?', [sessionId]);
-
-        res.status(201).json({ message: 'Reservation created' });
-    } catch (error) {
-        console.error('Error creating reservation:', error);
-        res.status(500).json({ error: 'Server error' });
-    } finally {
-        if (dbConn) {
-            await dbConn.end();
-        }
+app.post("/api/reservations", isAuthenticated, async (req, res) => {
+  let dbConn;
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: "User not authenticated" });
     }
+
+    const { sessionId } = req.body;
+    if (!sessionId) {
+      return res.status(400).json({ error: "Session ID is required" });
+    }
+
+    dbConn = await dbConnection();
+
+    const userId = req.session.user.id;
+
+    // Check if there are available places
+    const [session] = await dbConn.execute(
+      "SELECT place_disponible FROM sessions WHERE id_session = ?",
+      [sessionId]
+    );
+    if (session.length === 0 || session[0].place_disponible <= 0) {
+      return res.status(400).json({ error: "No available places" });
+    }
+
+    // Create reservation
+    await dbConn.execute(
+      "INSERT INTO reservations (id_session, id_user) VALUES (?, ?)",
+      [sessionId, userId]
+    );
+
+    // Update available places
+    await dbConn.execute(
+      "UPDATE sessions SET place_disponible = place_disponible - 1 WHERE id_session = ?",
+      [sessionId]
+    );
+
+    res.status(201).json({ message: "Reservation created" });
+  } catch (error) {
+    console.error("Error creating reservation:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    if (dbConn) {
+      await dbConn.end();
+    }
+  }
 });
 
 
 // fetch sessions
-app.get('/api/sessions', async (req, res) => {
+app.get('/api/sessions', isAuthenticated, async (req, res) => {
     let dbConn;
     try {
         dbConn = await dbConnection();
