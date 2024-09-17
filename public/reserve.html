@@ -23,10 +23,10 @@
     </div>
 
     <script>
-        // Fetch reservations from the server
+
         fetch('/api/reservations', {
             method: 'GET',
-            credentials: 'include' // Include cookies in request
+            credentials: 'include'
         })
         .then(response => response.json())
         .then(data => {
@@ -58,14 +58,13 @@
         })
         .catch(error => console.error('Error fetching reservations:', error));
 
-        // Function to cancel a reservation
         function cancelReservation(reservationId) {
             if (confirm('Are you sure you want to cancel this reservation?')) {
                 fetch(`/api/reservations/${reservationId}`, { method: 'DELETE' })
                     .then(response => {
                         if (response.ok) {
                             alert('Reservation cancelled successfully');
-                            location.reload(); // Reload page after cancellation
+                            location.reload();
                         } else {
                             alert('Error cancelling reservation');
                         }
