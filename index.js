@@ -95,25 +95,7 @@ app.get("/profile", (req, res) => {
 });
 
 
-app.post("/Login", async (req, res) => {
-  let dbConn;
-  try {
-    dbConn = await dbConnection();
 
-    const { email, password } = req.body;
-
-    const sqlQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
-    const [result] = await dbConn.execute(sqlQuery, [email, md5(password)]);
-
-  } catch (error) {
-    console.log("erreur insertion", error);
-    res.status(500).send("Database error");
-  } finally {
-    if (dbConn) {
-      await dbConn.end();
-    }
-  }
-});
 
 function hashpassword(password) {
   return createHash('md5').update(password).digest('hex');
@@ -183,46 +165,6 @@ function isAuthenticated(req, res, next) {
 
 
 
-
-
-async function SignUp() {
-  const nom = document.getElementById("nom").value;
-  const prenom = document.getElementById("prenom").value;
-  const telephone = document.getElementById("telephone").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const confirmPassword = document.getElementById("confirmpassword").value;
-  const logMessages = document.getElementById("log-messages");
-
-  // Validate passwords
-  if (password !== confirmPassword) {
-    logMessages.innerHTML = "Les mots de passe ne correspondent pas.";
-    return;
-  }
-
-  if (password.length < 8) {
-    logMessages.innerHTML = "Le mot de passe doit contenir au moins 8 caractères.";
-    return;
-  }
-
-  try {
-    const response = await fetch("/SignUp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nom, prenom, telephone, email, password })
-    });
-
-    const result = await response.text();
-    logMessages.innerHTML = result;
-
-    if (response.ok) {
-      alert("Inscription réussie!");
-      window.location.href = "login.html";
-    }
-  } catch (error) {
-    logMessages.innerHTML = "Erreur: " + error.message;
-  }
-}
 
 
 
