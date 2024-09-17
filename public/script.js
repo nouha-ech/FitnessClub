@@ -144,3 +144,29 @@ async function Validate() {
     logMessages.innerHTML = "erreur  " + error.message;
   }
 }
+
+
+ function handleLogout() {
+   console.log("Logout link clicked");
+
+   fetch("/logout", {
+     method: "POST",
+     credentials: "include",
+   })
+     .then((response) => {
+       if (response.ok) {
+         console.log("Logout successful");
+         alert("You have been logged out successfully.");
+         window.location.href = "/Homepage";
+       } else {
+         return response.text().then((text) => {
+           console.error("Logout failed:", text);
+           alert(text);
+         });
+       }
+     })
+     .catch((error) => {
+       console.error("Error during logout:", error);
+       alert("An error occurred while logging out.");
+     });
+ }

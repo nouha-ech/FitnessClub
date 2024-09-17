@@ -190,7 +190,8 @@ app.post("/Validate", async (req, res) => {
       };
 
       setTimeout(() => {
-        return res.redirect("/Accueil");}, 100); //pour aller vrs page daccueil
+        return res.redirect("/Accueil");}, 100); 
+        console.log("Session data:", req.session);//pour aller vrs page daccueil
     } else {
       return res.status(401).send("Invalid credentials");
     }
@@ -554,4 +555,22 @@ app.patch("/updateUserInfo", async (req, res) => {
       await dbConn.end();
     }
   }
+});
+
+
+//  destroy session
+app.post('/logout', (req, res) => {
+    console.log('Logout request received');
+     console.log("Session data before destroy:", req.session);
+
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).send('Error logging out');
+        }
+
+        console.log('Session destroyed successfully');
+        res.redirect('/Homepage');
+         console.log("Session data after destroy:", req.session);
+    });
 });
