@@ -34,33 +34,29 @@
                 <input type="email" id="email" name="email" placeholder="Email" disabled>
             </div>
 
-            <button type="button" id="modifier-btn" onclick="enableEditing()">Modifier Info</button>
+            <button type="button" id="modifier-btn" onclick="modifyInfo()">Modifier Info</button>
             <button type="button" id="save-btn" style="display: none;" onclick="saveInfo()">Sauvegarder</button>
         </form>
         <div id="update-messages"></div>
     </div>
 
     <script>
-        // Fetch user info and populate placeholders (array-based logic)
         window.onload = async function() {
             try {
                 const response = await fetch("/getUserInfo");
                 const userInfoArray = await response.json();
 
-                // Log the array and the first object to check its content
                 console.log("API Response:", userInfoArray);
                 console.log("First User Info Object:", userInfoArray[0]);
 
                 if (response.ok && userInfoArray.length > 0) {
-                    const userInfo = userInfoArray[0]; // Use the first object of the array
+                    const userInfo = userInfoArray[0];
 
-                    // Populate the form with user info as placeholders
                     document.getElementById("nom").placeholder = userInfo.nom || "Nom";
                     document.getElementById("prenom").placeholder = userInfo.prenom || "Prénom";
                     document.getElementById("telephone").placeholder = userInfo.telephone || "Téléphone";
                     document.getElementById("email").placeholder = userInfo.email || "Email";
 
-                    // Also set the input values (to be used when editing)
                     document.getElementById("nom").value = userInfo.nom || "";
                     document.getElementById("prenom").value = userInfo.prenom || "";
                     document.getElementById("telephone").value = userInfo.telephone || "";
@@ -74,21 +70,20 @@
             }
         };
 
-        // Enable form fields for editing
- // Enable form fields for editing
-function enableEditing() {
-    // Enable all the input fields to allow editing
+
+function modifyInfo() {
+    // enable update
     document.getElementById("nom").disabled = false;
     document.getElementById("prenom").disabled = false;
     document.getElementById("telephone").disabled = false;
     document.getElementById("email").disabled = false;
     
-    // Hide the "Modifier Info" button and show the "Sauvegarder" button
+    // to change btn
     document.getElementById("modifier-btn").style.display = "none";
     document.getElementById("save-btn").style.display = "block";
 }
 
-// Save updated user info
+// saveupdated info
 async function saveInfo() {
 
     const nom = document.getElementById("nom").value;
@@ -97,25 +92,24 @@ async function saveInfo() {
     const email = document.getElementById("email").value;
 
     try {
-        const response = await fetch(`/updateUserInfo`, { // Use userId in URL
+        const response = await fetch(`/updateUserInfo`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ nom, prenom, telephone, email }) // Send updated user info
+            body: JSON.stringify({ nom, prenom, telephone, email })
         });
 
         if (!response.ok) throw new Error("Failed to update user info");
 
-        document.getElementById("update-messages").innerText = "Informations mises à jour avec succès!";
-        
-        // Disable the form fields after saving
+        document.getElementById("update-messages").innerText = "your info has been updated!";
+        // diszable writing
         document.getElementById("nom").disabled = true;
         document.getElementById("prenom").disabled = true;
         document.getElementById("telephone").disabled = true;
         document.getElementById("email").disabled = true;
 
-        // Show the "Modifier Info" button and hide the "Sauvegarder" button
+        // change btn to modifier
         document.getElementById("modifier-btn").style.display = "block";
         document.getElementById("save-btn").style.display = "none";
 
