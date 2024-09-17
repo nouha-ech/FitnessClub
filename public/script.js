@@ -80,37 +80,6 @@ async function register() {
 }
 
 
-
-async function Login() {
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
-  const logMessages = document.getElementById("log-messages");
-
-  //
-
-  if (!email || !password) {
-    logMessages.innerHTML = "enter your email and password";
-    return;
-  }
-
-  try {
-    const response = await fetch("/Login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }), //convertir json en string
-    });
-    const result = await response.text();
-    logMessages.innerHTML = result;
-
-    if (response.ok) {
-      document.getElementById("login-email").value = "";
-      document.getElementById("login-password").value = "";
-    }
-  } catch (error) {
-    logMessages.innerHTML = "erreur  " + error.message;
-  }
-}
-
 async function Validate() {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
