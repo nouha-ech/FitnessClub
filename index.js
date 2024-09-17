@@ -179,10 +179,8 @@ app.post("/Validate", async (req, res) => {
     }
 
     const hashedPassword = rows[0].mdp;
-
-    // Validate password
     if (md5(password) === hashedPassword) {
-      // Set session
+      
       req.session.user = {
         id: rows[0].id_user, // Store user ID in the session
         email: email,
@@ -191,7 +189,7 @@ app.post("/Validate", async (req, res) => {
 
       setTimeout(() => {
         return res.redirect("/Accueil");}, 100); 
-        console.log("Session data:", req.session);//pour aller vrs page daccueil
+        console.log("Session data:", req.session);// log session data
     } else {
       return res.status(401).send("Invalid credentials");
     }

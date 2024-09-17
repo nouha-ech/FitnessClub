@@ -48,12 +48,11 @@
             
             if (password !== confirmPassword) {
                 alert('Les mots de passe ne correspondent pas.');
-                return false; 
-                // Permet la soumission du formulaire
+                return false;
             }
             if (password.length < 8) {
                 alert('Le mot de passe doit contenir au moins 8 caractères.');
-                return false; // Prevent form submission
+                return false; // Prevent submission
             }
        
             return true;
