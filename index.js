@@ -51,11 +51,6 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-   // res.send("welcome to our Gym");
-})
-
-
 app.listen (port, () => {
   console.log(`run serverr`);
    open("http://localhost:3000/Homepage");
@@ -109,7 +104,7 @@ const testHash = hashpassword('nohaila');
 console.log('test hash:', testHash);
 
 
-// test validation
+// mdpvalidation
 
 app.post("/Validate", async (req, res) => {
   let dbConn;
@@ -163,11 +158,6 @@ function isAuthenticated(req, res, next) {
 }
 
 
-
-
-
-
-
 // sign up
 
 app.post("/SignUp", async (req, res) => {
@@ -200,7 +190,6 @@ app.post("/SignUp", async (req, res) => {
 });
 
 
-
 // register
 
 
@@ -228,7 +217,6 @@ app.post("/Register", async (req, res) => {
     }
   }
 });
-
 
 
 
@@ -307,10 +295,6 @@ app.post("/api/reservations", isAuthenticated, async (req, res) => {
 });
 
 
-
-
-
-
 // to get unique reservations for logged in user
 
 app.get("/api/reservations", async (req, res) => {
@@ -344,39 +328,6 @@ app.get("/api/reservations", async (req, res) => {
     }
   }
 });
-app.get("/api/reservations", async (req, res) => {
-  let dbConn;
-  try {
-    console.log("Session Data After Login:", req.session);
-
-    if (!req.session.user || !req.session.user.id) {
-      return res.status(401).json({ error: "User not authenticated" });
-    }
-
-    dbConn = await dbConnection();
-
-    const userId = req.session.user.id;
-
-    const sqlQuery = `
-      SELECT r.id_reservation, s.nom_session, s.date_session, s.heure_session
-      FROM reservations r
-      JOIN sessions s ON r.id_session = s.id_session
-      WHERE r.id_user = ?
-    `;
-    const [rows] = await dbConn.execute(sqlQuery, [userId]);
-
-    res.json(rows); // Send reservations as JSON
-  } catch (error) {
-    console.error("Error fetching reservations:", error);
-    res.status(500).json({ error: "Server error" });
-  } finally {
-    if (dbConn) {
-      await dbConn.end();
-    }
-  }
-});
-
-
 
 
 app.delete("/api/reservations/:id", async (req, res) => {
@@ -417,8 +368,7 @@ app.delete("/api/reservations/:id", async (req, res) => {
 });
 
 
-
-// fetch user info for profile html
+// fetch user info for profile
 
 app.get("/getUserInfo", async (req, res) => {
   let dbConn;
@@ -442,7 +392,6 @@ app.get("/getUserInfo", async (req, res) => {
     }
   }
 });
-
 
 // update profile
 app.patch("/updateUserInfo", async (req, res) => {
