@@ -189,37 +189,6 @@ app.post("/SignUp", async (req, res) => {
   }
 });
 
-
-// register
-
-
-app.post("/Register", async (req, res) => {
-  let dbConn;
-  try {
-    dbConn = await dbConnection();
-    const { nom, prenom, telephone, email, mdp } = req.body;
-    const sqlQuery =
-      "INSERT INTO users (nom, prenom, telephone, email, mdp) VALUES (?, ?, ?, ?, ?)";
-    const [result] = await dbConn.execute(sqlQuery, [
-      nom,
-      prenom,
-      telephone,
-      email,
-      md5(mdp),
-    ]);
-    res.send("Inscription réussie");
-  } catch (error) {
-    console.error("Erreur d'insertion", error);
-    res.status(500).send("Erreur de bd");
-  } finally {
-    if (dbConn) {
-      await dbConn.end();
-    }
-  }
-});
-
-
-
 // fetch sessions
 app.get('/api/sessions', isAuthenticated, async (req, res) => {
     let dbConn;

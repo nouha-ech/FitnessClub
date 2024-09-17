@@ -41,45 +41,6 @@ async function SignUp() {
   }
 }
 
-
-
-async function register() {
-  const nom = document.getElementById("nom").value;
-  const prenom = document.getElementById("prenom").value;
-  const telephone = document.getElementById("telephone").value;
-  const email = document.getElementById("email").value;
-  const mdp = document.getElementById("mdp").value;
-  const logMessages = document.getElementById("log-messages");
-
-  if (!nom || !prenom || !telephone || !email || !mdp) {
-    logMessages.innerHTML = "Veuillez remplir tous les champs.";
-    return;
-  }
-
-  try {
-    const response = await fetch("/Register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nom, prenom, telephone, email, mdp }),
-    });
-
-    const result = await response.text();
-    logMessages.innerHTML = result;
-
-    if (response.ok) {
-      // Optionally clear form fields
-      document.getElementById("nom").value = "";
-      document.getElementById("prenom").value = "";
-      document.getElementById("telephone").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("mdp").value = "";
-    }
-  } catch (error) {
-    logMessages.innerHTML = "Erreur: " + error.message;
-  }
-}
-
-
 async function Validate() {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
@@ -110,7 +71,6 @@ async function Validate() {
     logMessages.innerHTML = "erreur  " + error.message;
   }
 }
-
 
  function handleLogout() {
    console.log("Logout link clicked");
