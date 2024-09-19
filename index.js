@@ -287,7 +287,7 @@ app.get("/api/reservations", async (req, res) => {
     `;
     const [rows] = await dbConn.execute(sqlQuery, [userId]);
 
-    res.json(rows); // Send reservations as JSON
+    res.json(rows); 
   } catch (error) {
     console.error("Error fetching reservations:", error);
     res.status(500).json({ error: "Server error" });
