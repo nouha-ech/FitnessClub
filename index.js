@@ -51,11 +51,17 @@ app.use(
   })
 );
 
-app.listen (port, () => {
-  console.log(`run serverr`);
-   open("http://localhost:3000/Homepage");
-
-});
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.user && req.session.user.authenticated) {
+    next();
+  } else {
+    console.warn("Unauthorized access attempt:", req.ip); // Log unauthorized access
+    res.status(401).json({
+      error: "Unauthorized",
+      message: "You are not authorized to view this page. Please log in.",
+    });
+  }
+}
 
 
 app.use(express.static("public"));
@@ -145,17 +151,8 @@ app.post("/Validate", async (req, res) => {
   }
 });
 
-function isAuthenticated(req, res, next) {
-  if (req.session && req.session.user && req.session.user.authenticated) {
-    next();
-  } else {
-      res
-        .status(401)
-        .send(
-          "<h1>Unauthorized</h1><p>You are not authorized to view this page. Please log in.</p>"
-        );
-  }
-}
+
+
 
 
 // sign up
@@ -412,4 +409,9 @@ app.post('/logout', (req, res) => {
         res.redirect('/Homepage');
          console.log("Session data after destroy:", req.session);
     });
+});
+
+app.listen(port, () => {
+  console.log(`run serverr`);
+  open("http://localhost:3000/Homepage");
 });
