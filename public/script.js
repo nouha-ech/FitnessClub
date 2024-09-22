@@ -26,8 +26,8 @@ async function SignUp() {
       body: JSON.stringify({ nom, prenom, telephone, email, password }),
     });
 
-   // const result = await response.text();
-  //  logMessages.innerHTML = result;
+    const result = await response.text();
+    logMessages.innerHTML = result;
 
     if (response.ok) {
      
